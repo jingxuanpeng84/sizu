@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+    <path Seq="1" Type="int">
+        <x Type="float">0</x>
+        <y Type="float">0</y>
+    </path>
+    <path Seq="2" Type="int">
+        <x Type="float">5.9550586</x>
+        <y Type="float">-0.024782738</y>
+    </path>
+    <path Seq="3" Type="int">
+        <x Type="float">7.6177158</x>
+        <y Type="float">-0.040007655</y>
+    </path>
+    <path Seq="4" Type="int">
+        <x Type="float">9.2853022</x>
+        <y Type="float">0.10788879</y>
+    </path>
+    <path Seq="5" Type="int">
+        <x Type="float">17.024216</x>
+        <y Type="float">-0.39235327</y>
+    </path>
+    <path Seq="6" Type="int">
+        <x Type="float">22.072041</x>
+        <y Type="float">-0.68604666</y>
+    </path>
+    <path Seq="7" Type="int">
+        <x Type="float">33.150818</x>
+        <y Type="float">-1.2614403</y>
+    </path>
+    <path Seq="8" Type="int">
+        <x Type="float">35.125496</x>
+        <y Type="float">7.3330798</y>
+    </path>
+    <path Seq="9" Type="int">
+        <x Type="float">36.707066</x>
+        <y Type="float">15.242154</y>
+    </path>
+    <path Seq="10" Type="int">
+        <x Type="float">30.96277</x>
+        <y Type="float">16.561478</y>
+    </path>
+    <path Seq="11" Type="int">
+        <x Type="float">21.601828</x>
+        <y Type="float">18.545153</y>
+    </path>
+    <path Seq="12" Type="int">
+        <x Type="float">20.355103</x>
+        <y Type="float">18.848232</y>
+    </path>
+    <path Seq="13" Type="int">
+        <x Type="float">21.496164</x>
+        <y Type="float">22.83045</y>
+    </path>
+    <path Seq="14" Type="int">
+        <x Type="float">20.555637</x>
+        <y Type="float">18.819353</y>
+    </path>
+    <path Seq="15" Type="int">
+        <x Type="float">22.41382</x>
+        <y Type="float">18.417633</y>
+    </path>
+    <path Seq="16" Type="int">
+        <x Type="float">31.240913</x>
+        <y Type="float">16.573996</y>
+    </path>
+    <path Seq="17" Type="int">
+        <x Type="float">36.675156</x>
+        <y Type="float">14.91805</y>
+    </path>
+    <path Seq="18" Type="int">
+        <x Type="float">35.08374</x>
+        <y Type="float">7.1135435</y>
+    </path>
+    <path Seq="19" Type="int">
+        <x Type="float">32.877445</x>
+        <y Type="float">-1.3921539</y>
+    </path>
+    <path Seq="20" Type="int">
+        <x Type="float">21.837564</x>
+        <y Type="float">-0.72137904</y>
+    </path>
+    <path Seq="21" Type="int">
+        <x Type="float">9.0078173</x>
+        <y Type="float">0.056791991</y>
+    </path>
+    <path Seq="22" Type="int">
+        <x Type="float">5.973732</x>
+        <y Type="float">-0.050389279</y>
+    </path>
+    <path Seq="23" Type="int">
+        <x Type="float">0</x>
+        <y Type="float">0</y>
+    </path>
+</Root>

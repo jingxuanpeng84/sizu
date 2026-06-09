@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>两路 RTSP 预览</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei",
+        sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 24px;
+      text-align: center;
+      max-width: 720px;
+    }
+    .card {
+      width: 100%;
+      max-width: 1080px;
+      background: #020617;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      border: 1px solid #1f2937;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    label {
+      font-size: 13px;
+      color: #9ca3af;
+      min-width: 60px;
+    }
+    input[type="text"] {
+      flex: 1;
+      min-width: 220px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+      outline: none;
+    }
+    input[type="text"]::placeholder {
+      color: #6b7280;
+    }
+    input[type="text"]:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease-out;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: white;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.7);
+    }
+    .btn-secondary {
+      background: transparent;
+      border-color: #4b5563;
+      color: #e5e7eb;
+    }
+    .btn-secondary:hover {
+      border-color: #9ca3af;
+      background: rgba(148, 163, 184, 0.1);
+    }
+    .players {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 900px) {
+      .players {
+        grid-template-columns: 1fr;
+      }
+    }
+    .player-card {
+      background: radial-gradient(circle at top left, #1f2937, #020617);
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid #111827;
+      position: relative;
+      overflow: hidden;
+    }
+    .player-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .player-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+    .player-url {
+      font-size: 11px;
+      color: #9ca3af;
+      word-break: break-all;
+      max-height: 32px;
+      overflow: hidden;
+    }
+    video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      object-fit: contain;
+    }
+    .hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .status {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .status span {
+      padding: 1px 8px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+    }
+    .status-ok span {
+      border-color: #10b981;
+      color: #6ee7b7;
+    }
+    .status-error span {
+      border-color: #ef4444;
+      color: #fecaca;
+    }
+  </style>
+  <!--
+    ⚠ 重要说明（请务必阅读）：
+    浏览器本身不能直接播放 RTSP 流，必须要有一个中间服务
+    把 RTSP 转成浏览器可识别的协议，比如 HLS（.m3u8）、WebRTC、HTTP-FLV 等。
+
+    这个示例前端只负责：
+      - 在页面中配置两路 RTSP 地址（或设备 IP）
+      - 根据你定义的规则，拼出「可播放地址」
+      - 用 <video> 播放这个「可播放地址」
+
+    你需要在自己后端实现：RTSP → HLS/WebRTC/FLV 的转换服务，并保证前端拼出的 URL 能访问。
+  -->
+</head>
+<body>
+  <h1>两路 RTSP 预览控制台</h1>
+  <p class="subtitle">
+    在下方输入两路摄像机的 RTSP 地址或设备 IP，由前端拼接成播放地址并显示预览。<br />
+    <strong>注意：</strong>需要你自己的媒体服务，把 RTSP 转成浏览器可以播放的流（例如
+    HLS/WebRTC），本示例只实现前端控制与展示。
+  </p>
+
+  <div class="card">
+    <div class="form-row">
+      <label for="rtsp1">通道 1</label>
+      <input
+        id="rtsp1"
+        type="text"
+        placeholder="例如：rtsp://用户名:密码@192.168.1.10:554/Streaming/Channels/101"
+      />
+    </div>
+    <div class="form-row">
+      <label for="rtsp2">通道 2</label>
+      <input
+        id="rtsp2"
+        type="text"
+        placeholder="例如：rtsp://用户名:密码@192.168.1.11:554/Streaming/Channels/101"
+      />
+    </div>
+<!--
+    <p class="hint">
+      建议填写完整 RTSP 地址，前端会将其作为参数传递给你的转码/分发服务。你也可以只填设备
+      IP，由后端根据 IP 做映射。
+    </p>
+  -->
+    <div class="btn-row">
+      <button class="btn-primary" type="button" onclick="startPreview()">
+        开始预览两路
+      </button>
+      <button class="btn-secondary" type="button" onclick="stopPreview()">
+        停止预览
+      </button>
+      <button class="btn-primary" type="button" onclick="saveMapAndExit()" 
+        style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);">
+        保存地图
+      </button>
+    </div>
+
+<!--
+    <p class="hint">
+      示例中假设有一个后端接口：
+      <code>/play?rtsp=ENCODED_RTSP_URL&amp;ch=1</code>，负责把 RTSP 转成 HLS/WebRTC 并输出。
+      你可以根据自己服务的实际 URL 规则，修改下方
+      <code>buildPlayUrl()</code> 函数。
+    </p>
+-->
+
+    <div class="players">
+      <div class="player-card">
+        <div class="player-header">
+          <div class="player-title">预览通道 1</div>
+        </div>
+        <div class="player-url" id="url1-display">未开始</div>
+        <video id="player1" controls muted playsinline></video>
+        <div class="status" id="status1"><span>等待开始</span></div>
+      </div>
+
+      <div class="player-card">
+        <div class="player-header">
+          <div class="player-title">预览通道 2</div>
+        </div>
+        <div class="player-url" id="url2-display">未开始</div>
+        <video id="player2" controls muted playsinline></video>
+        <div class="status" id="status2"><span>等待开始</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 使用 hls.js 播放 mediamtx 输出的 HLS（.m3u8） -->
+  <!-- 地图显示面板 -->
+  <div class="card" style="margin-top:20px;max-width:1080px;width:100%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-size:15px;font-weight:500;color:#e5e7eb;">SLAM 地图</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span id="mapStatus" style="font-size:12px;color:#6b7280;">未加载</span>
+        <button class="btn-primary" type="button" onclick="requestMapFromSlam()" style="font-size:12px;padding:5px 12px;">从SLAM获取</button>
+        <button class="btn-secondary" type="button" onclick="loadMap()" style="font-size:12px;padding:5px 12px;">刷新显示</button>
+      </div>
+    </div>
+    <!-- 双层 canvas 容器 -->
+    <div id="mapContainer" style="position:relative;width:100%;background:#020617;border-radius:10px;border:1px solid #1f2937;overflow:hidden;min-height:200px;">
+      <!-- 底层：地图图像 -->
+      <canvas id="mapCanvas"  style="display:block;width:100%;height:auto;"></canvas>
+      <!-- 上层：路径叠加，绝对定位覆盖底层 -->
+      <canvas id="pathCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+      <!-- 再上一层：当前SLAM位置三角形 -->
+      <canvas id="poseCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+      <div id="mapPlaceholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#374151;font-size:13px;">
+        等待 SLAM 推送地图...
+      </div>
+    </div>
+    <!-- 图例 -->
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:#9ca3af;">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#60a5fa;margin-right:4px;vertical-align:middle;"></span>0-普通点</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;margin-right:4px;vertical-align:middle;"></span>1-视觉点</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#a78bfa;margin-right:4px;vertical-align:middle;"></span>2-充电点</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#34d399;margin-right:4px;vertical-align:middle;"></span>3-等待点</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f87171;margin-right:4px;vertical-align:middle;"></span>4-电梯内点</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#fb923c;margin-right:4px;vertical-align:middle;"></span>5-地图切换点</span>
+      <span><span style="display:inline-block;width:20px;height:2px;background:#facc15;margin-right:4px;vertical-align:middle;"></span>路径连线</span>
+    </div>
+  </div>
+
+  <!-- 打点控制面板 -->
+  <div class="card" style="margin-top:20px;max-width:1080px;width:100%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-size:15px;font-weight:500;color:#e5e7eb;">路径打点</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span id="currentMapInfo" style="font-size:12px;color:#9ca3af;">当前地图: 地图1</span>
+        <button class="btn-primary" type="button" onclick="switchMap()" style="font-size:12px;padding:5px 12px;">切换到新地图</button>
+      </div>
+    </div>
+
+    <!-- 第一步：选择点类型 -->
+    <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;">① 选择点类型</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+      <select id="pointTypeSelect"
+        style="padding:8px 12px;border-radius:8px;border:1px solid #374151;background:#020617;color:#e5e7eb;font-size:13px;outline:none;min-width:160px;"
+        onchange="onTypeChange()">
+        <option value="" disabled selected>-- 请选择点类型 --</option>
+        <option value="0">0 - 普通点</option>
+        <option value="1">1 - 视觉点</option>
+        <option value="2">2 - 充电点</option>
+        <option value="3">3 - 等待点</option>
+        <option value="4">4 - 电梯内点</option>
+        <option value="5">5 - 地图切换点</option>
+      </select>
+      <button class="btn-secondary" type="button" onclick="openAddTypeDialog()"
+        style="font-size:12px;padding:7px 14px;">+ 添加类型</button>
+    </div>
+
+    <!-- 第二步：打点 -->
+    <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;">② 打点操作</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
+      <button id="markBtn" class="btn-primary" type="button" onclick="fetchAndMark()" disabled
+        style="opacity:0.4;cursor:not-allowed;">
+        打点
+      </button>
+      <button class="btn-secondary" type="button" onclick="undoPoint()">撤销最后一点</button>
+      <button class="btn-secondary" type="button" onclick="clearPoints()">清空所有点</button>
+      <button class="btn-primary" type="button" onclick="savePoints()" style="font-size:12px;padding:7px 14px;background: linear-gradient(135deg, #10b981, #059669);box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);">保存点</button>
+      <button class="btn-secondary" type="button" onclick="downloadXml()">下载 XML</button>
+      <div id="posDisplay" style="font-size:12px;color:#9ca3af;background:#0f172a;border-radius:8px;padding:7px 12px;border:1px solid #1f2937;">
+        当前位置：未获取
+      </div>
+    </div>
+
+    <div style="margin-top:12px;overflow-x:auto;">
+      <table id="pointTable" style="width:100%;border-collapse:collapse;font-size:12px;color:#e5e7eb;">
+        <thead>
+          <tr style="color:#9ca3af;border-bottom:1px solid #1f2937;">
+            <th style="padding:6px 10px;text-align:left;">Seq</th>
+            <th style="padding:6px 10px;text-align:left;">X</th>
+            <th style="padding:6px 10px;text-align:left;">Y</th>
+            <th style="padding:6px 10px;text-align:left;">Yaw</th>
+            <th style="padding:6px 10px;text-align:left;">类型</th>
+          </tr>
+        </thead>
+        <tbody id="pointTableBody"></tbody>
+      </table>
+      <div id="pointEmpty" style="text-align:center;color:#4b5563;font-size:12px;padding:16px;">暂无路径点</div>
+    </div>
+
+    <div id="markStatus" style="margin-top:8px;font-size:12px;color:#9ca3af;min-height:18px;"></div>
+  </div>
+
+  <!-- 添加点类型弹窗 -->
+  <div id="addTypeOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:center;justify-content:center;">
+    <div style="background:#0f172a;border:1px solid #1f2937;border-radius:14px;padding:24px;width:320px;box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+      <div style="font-size:14px;font-weight:500;color:#e5e7eb;margin-bottom:16px;">添加点类型</div>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px;color:#9ca3af;display:block;margin-bottom:4px;">类型名称</label>
+        <input id="newTypeName" type="text" placeholder="例如：停靠点"
+          style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid #374151;background:#020617;color:#e5e7eb;font-size:13px;outline:none;box-sizing:border-box;" />
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px;color:#9ca3af;display:block;margin-bottom:4px;">类型数字（keypointflag）</label>
+        <input id="newTypeValue" type="number" min="0" placeholder="例如：5"
+          style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid #374151;background:#020617;color:#e5e7eb;font-size:13px;outline:none;box-sizing:border-box;" />
+        <div style="font-size:11px;color:#4b5563;margin-top:4px;">已有：1普通 2视觉 3充电 4电梯等待 5乘梯 6地图切换</div>
+      </div>
+      <div id="addTypeError" style="font-size:12px;color:#fca5a5;margin-bottom:10px;min-height:16px;"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn-secondary" type="button" onclick="closeAddTypeDialog()" style="font-size:13px;">取消</button>
+        <button class="btn-primary"   type="button" onclick="confirmAddType()"    style="font-size:13px;">确认添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 地图选择弹窗 -->
+  <div id="mapSelectOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:center;justify-content:center;">
+    <div style="background:#0f172a;border:1px solid #1f2937;border-radius:14px;padding:24px;width:520px;max-height:80vh;box-shadow:0 20px 50px rgba(0,0,0,0.8);display:flex;flex-direction:column;">
+      <div style="font-size:14px;font-weight:500;color:#e5e7eb;margin-bottom:16px;">选择要上传的地图</div>
+      
+      <!-- 地图列表容器 -->
+      <div id="mapListContainer" style="flex:1;overflow-y:auto;margin-bottom:16px;min-height:200px;max-height:400px;">
+        <div id="mapListLoading" style="text-align:center;color:#9ca3af;padding:40px;">
+          正在加载地图列表...
+        </div>
+        <div id="mapListContent" style="display:none;">
+          <!-- 地图列表将动态插入这里 -->
+        </div>
+        <div id="mapListEmpty" style="display:none;text-align:center;color:#6b7280;padding:40px;">
+          <div style="font-size:14px;margin-bottom:8px;">未找到任何地图文件</div>
+          <div style="font-size:12px;">请先保存地图后再试</div>
+        </div>
+      </div>
+      
+      <div id="mapSelectError" style="font-size:12px;color:#fca5a5;margin-bottom:10px;min-height:16px;"></div>
+      
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn-secondary" type="button" onclick="closeMapSelectDialog()" style="font-size:13px;">取消</button>
+        <button id="confirmUploadBtn" class="btn-primary" type="button" onclick="confirmUploadMap()" style="font-size:13px;" disabled>上传选中的地图</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    /**
+     * 根据你电脑上的 mediamtx 默认配置，前端只播放它输出的 HLS 地址。
+     *
+     * 常见情况（默认）：
+     *   - 推流到：rtsp://PC_IP:8554/stream1
+     *   - mediamtx 输出 HLS： http://PC_IP:8888/stream1/index.m3u8
+     *
+     * 前端支持两种输入方式：
+     *   1）直接输入完整 RTSP，例如：rtsp://192.168.1.180:8554/stream1
+     *      → 自动转换为：http://192.168.1.180:8888/stream1/index.m3u8
+     *   2）只输入 IP，例如：192.168.1.180
+     *      → 通道 1: http://192.168.1.180:8888/stream1/index.m3u8
+     *        通道 2: http://192.168.1.180:8888/stream2/index.m3u8
+     */
+    function buildPlayUrl(input, channelIndex) {
+      if (!input) return "";
+      input = input.trim();
+
+      // 情况 1：输入完整 RTSP URL
+      if (input.startsWith("rtsp://")) {
+        try {
+          const u = new URL(input);
+          const host = u.hostname;
+          const path = u.pathname.replace(/^\/+/, ""); // 去掉开头的 '/'
+          // 假设 HLS 端口是 8888（mediamtx 默认）
+          return `http://${host}:8888/${path}/index.m3u8`;
+        } catch (e) {
+          console.warn("RTSP URL 解析失败，将按 IP 处理:", e);
+        }
+      }
+
+      // 情况 2：只输入 IP 或主机名
+      const host = input;
+      const path = channelIndex === 1 ? "stream1" : "stream2";
+      return `http://${host}:8888/${path}/index.m3u8`;
+    }
+
+    // 记录 hls 实例，方便停止预览时销毁
+    let hlsInstances = [null, null];
+
+    function startPreview() {
+      const input1 = document.getElementById("rtsp1").value;
+      const input2 = document.getElementById("rtsp2").value;
+
+      const url1 = buildPlayUrl(input1, 1);
+      const url2 = buildPlayUrl(input2, 2);
+
+      const video1 = document.getElementById("player1");
+      const video2 = document.getElementById("player2");
+
+      document.getElementById("url1-display").textContent =
+        url1 || "未配置 RTSP 地址";
+      document.getElementById("url2-display").textContent =
+        url2 || "未配置 RTSP 地址";
+
+      // 先清理上一次的播放
+      clearVideo(1);
+      clearVideo(2);
+
+      // 使用 hls.js 播放 HLS（mediamtx 输出的 .m3u8）
+      if (url1) {
+        if (Hls.isSupported()) {
+          // 配置低延迟参数
+          const hls1 = new Hls({
+            maxBufferLength: 3,           // 最大缓冲3秒
+            maxMaxBufferLength: 5,        // 最大缓冲上限5秒
+            maxBufferSize: 10 * 1000 * 1000, // 10MB
+            maxBufferHole: 0.5,           // 最大缓冲空洞0.5秒
+            lowLatencyMode: true,         // 启用低延迟模式
+            backBufferLength: 0,          // 不保留后向缓冲
+            liveSyncDurationCount: 1,     // 直播同步片段数量
+            liveMaxLatencyDurationCount: 3, // 最大延迟片段数
+            liveDurationInfinity: false,
+            highBufferWatchdogPeriod: 1   // 高缓冲监控周期1秒
+          });
+          hlsInstances[0] = hls1;
+          hls1.loadSource(url1);
+          hls1.attachMedia(video1);
+          hls1.on(Hls.Events.MANIFEST_PARSED, function () {
+            video1.play().then(
+              () => setStatus(1, "ok", "播放中"),
+              (err) => {
+                console.error("通道 1 播放失败:", err);
+                setStatus(1, "error", "播放失败，请检查 HLS 地址和 mediamtx");
+              }
+            );
+          });
+        } else if (video1.canPlayType("application/vnd.apple.mpegurl")) {
+          // Safari 原生支持 HLS
+          video1.src = url1;
+          video1.addEventListener("loadedmetadata", function () {
+            video1.play().then(
+              () => setStatus(1, "ok", "播放中"),
+              (err) => {
+                console.error("通道 1 播放失败:", err);
+                setStatus(1, "error", "播放失败，请检查 HLS 地址和 mediamtx");
+              }
+            );
+          });
+        } else {
+          setStatus(1, "error", "当前浏览器不支持 HLS 播放");
+        }
+      } else {
+        clearVideo(1);
+      }
+
+      if (url2) {
+        if (Hls.isSupported()) {
+          // 配置低延迟参数
+          const hls2 = new Hls({
+            maxBufferLength: 3,           // 最大缓冲3秒
+            maxMaxBufferLength: 5,        // 最大缓冲上限5秒
+            maxBufferSize: 10 * 1000 * 1000, // 10MB
+            maxBufferHole: 0.5,           // 最大缓冲空洞0.5秒
+            lowLatencyMode: true,         // 启用低延迟模式
+            backBufferLength: 0,          // 不保留后向缓冲
+            liveSyncDurationCount: 1,     // 直播同步片段数量
+            liveMaxLatencyDurationCount: 3, // 最大延迟片段数
+            liveDurationInfinity: false,
+            highBufferWatchdogPeriod: 1   // 高缓冲监控周期1秒
+          });
+          hlsInstances[1] = hls2;
+          hls2.loadSource(url2);
+          hls2.attachMedia(video2);
+          hls2.on(Hls.Events.MANIFEST_PARSED, function () {
+            video2.play().then(
+              () => setStatus(2, "ok", "播放中"),
+              (err) => {
+                console.error("通道 2 播放失败:", err);
+                setStatus(2, "error", "播放失败，请检查 HLS 地址和 mediamtx");
+              }
+            );
+          });
+        } else if (video2.canPlayType("application/vnd.apple.mpegurl")) {
+          video2.src = url2;
+          video2.addEventListener("loadedmetadata", function () {
+            video2.play().then(
+              () => setStatus(2, "ok", "播放中"),
+              (err) => {
+                console.error("通道 2 播放失败:", err);
+                setStatus(2, "error", "播放失败，请检查 HLS 地址和 mediamtx");
+              }
+            );
+          });
+        } else {
+          setStatus(2, "error", "当前浏览器不支持 HLS 播放");
+        }
+      } else {
+        clearVideo(2);
+      }
+    }
+
+    function stopPreview() {
+      clearVideo(1);
+      clearVideo(2);
+    }
+
+    function clearVideo(ch) {
+      const idx = ch - 1;
+      const video = document.getElementById("player" + ch);
+
+      // 销毁 hls 实例
+      if (hlsInstances[idx]) {
+        try {
+          hlsInstances[idx].destroy();
+        } catch (e) {
+          console.warn("销毁 hls 实例失败:", e);
+        }
+        hlsInstances[idx] = null;
+      }
+
+      if (video) {
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+      }
+
+      setStatus(ch, "idle", "已停止");
+      document.getElementById("url" + ch + "-display").textContent = "未开始";
+    }
+
+    function setStatus(ch, type, text) {
+      const el = document.getElementById("status" + ch);
+      el.classList.remove("status-ok", "status-error");
+      if (type === "ok") {
+        el.classList.add("status-ok");
+      } else if (type === "error") {
+        el.classList.add("status-error");
+      }
+      el.innerHTML = "<span>" + text + "</span>";
+    }
+
+    // ===== 地图 & 路径叠加 =====
+    let g_mapWidth = 0, g_mapHeight = 0;
+
+    function drawPath(pixels, points) {
+      const pathCanvas = document.getElementById("pathCanvas");
+      const mapCanvas  = document.getElementById("mapCanvas");
+      // 同步 pathCanvas 的像素尺寸与 mapCanvas
+      pathCanvas.width  = mapCanvas.width;
+      pathCanvas.height = mapCanvas.height;
+
+      const ctx = pathCanvas.getContext("2d");
+      ctx.clearRect(0, 0, pathCanvas.width, pathCanvas.height);
+      if (!pixels || pixels.length === 0) return;
+
+      // 构建 seq -> pixel 映射
+      const pixMap = {};
+      pixels.forEach(p => { pixMap[p.seq] = p; });
+
+      // 构建 seq -> keypointflag 映射
+      const flagMap = {};
+      if (points) points.forEach(p => { flagMap[p.seq] = p.keypointflag; });
+
+      // 按 seq 排序
+      const sorted = [...pixels].sort((a, b) => a.seq - b.seq);
+
+      // 画连线
+      ctx.beginPath();
+      ctx.strokeStyle = "#facc15";
+      ctx.lineWidth   = 2;
+      ctx.setLineDash([6, 3]);
+      sorted.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.px, p.py);
+        else         ctx.lineTo(p.px, p.py);
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 画点
+      sorted.forEach(p => {
+        const flag  = flagMap[p.seq] ?? 0;
+        const color = getTypeColor(flag);
+        // 外圈
+        ctx.beginPath();
+        ctx.arc(p.px, p.py, 7, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fill();
+        // 内圈
+        ctx.beginPath();
+        ctx.arc(p.px, p.py, 5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        // seq 标签
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 10px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.seq, p.px, p.py);
+      });
+    }
+
+    async function loadMap() {
+      document.getElementById("mapStatus").textContent = "加载中...";
+      try {
+        const r = await fetch("/api/map_image?" + Date.now());
+        if (!r.ok) {
+          document.getElementById("mapStatus").textContent = "暂无地图";
+          return;
+        }
+        const blob = await r.blob();
+        const url  = URL.createObjectURL(blob);
+        const img  = new Image();
+        img.onload = async () => {
+          const mapCanvas = document.getElementById("mapCanvas");
+          const poseCanvas = document.getElementById("poseCanvas");
+          mapCanvas.width  = img.naturalWidth;
+          mapCanvas.height = img.naturalHeight;
+          poseCanvas.width  = img.naturalWidth;
+          poseCanvas.height = img.naturalHeight;
+          g_mapWidth  = img.naturalWidth;
+          g_mapHeight = img.naturalHeight;
+          const ctx = mapCanvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          URL.revokeObjectURL(url);
+          document.getElementById("mapPlaceholder").style.display = "none";
+          document.getElementById("mapStatus").textContent =
+            `${img.naturalWidth} × ${img.naturalHeight} px`;
+          // 加载完地图后立即刷新路径叠加
+          await refreshOverlay();
+        };
+        img.src = url;
+      } catch(e) {
+        document.getElementById("mapStatus").textContent = "加载失败";
+        console.error("loadMap error:", e);
+      }
+    }
+
+    // ===== 地图选择对话框相关函数 =====
+    let g_selectedMapNumber = null;  // 当前选中的地图序号
+    let g_mapList = [];             // 当前获取到的 SLAM 地图列表
+
+    async function requestMapFromSlam() {
+      const statusEl = document.getElementById("mapStatus");
+      statusEl.textContent = "正在获取地图列表...";
+      statusEl.style.color = "#facc15";
+      
+      try {
+        const r = await fetch("/api/list_slam_maps");
+        
+        if (!r.ok) {
+          const err = await r.json();
+          statusEl.textContent = "获取失败: " + (err.error || "未知错误");
+          statusEl.style.color = "#f87171";
+          return;
+        }
+        
+        const res = await r.json();
+        console.log("收到地图列表:", res);
+        g_mapList = res.maps || [];
+        
+        if (res.status === "ok" && g_mapList.length > 0) {
+          // 按修改时间降序排序（最新的在最上面）
+          g_mapList.sort((a, b) => {
+            return new Date(b.modified_time) - new Date(a.modified_time);
+          });
+          
+          showMapSelectDialog(g_mapList);
+          statusEl.textContent = `找到 ${res.count || g_mapList.length} 个地图`;
+          statusEl.style.color = "#6ee7b7";
+        } else {
+          statusEl.textContent = "未找到地图文件";
+          statusEl.style.color = "#9ca3af";
+          showMapSelectDialog([]);  // 显示空列表对话框
+        }
+        
+      } catch(e) {
+        statusEl.textContent = "请求失败: " + e.message;
+        statusEl.style.color = "#f87171";
+        console.error("requestMapFromSlam error:", e);
+      }
+    }
+
+    function showMapSelectDialog(maps) {
+      const overlay = document.getElementById("mapSelectOverlay");
+      const loading = document.getElementById("mapListLoading");
+      const content = document.getElementById("mapListContent");
+      const empty = document.getElementById("mapListEmpty");
+      const errorEl = document.getElementById("mapSelectError");
+      const confirmBtn = document.getElementById("confirmUploadBtn");
+
+       // 保存地图列表到全局变量
+      g_mapList = maps;
+      
+      // 重置状态
+      g_selectedMapNumber = null;
+      errorEl.textContent = "";
+      confirmBtn.disabled = true;
+      
+      // 🔴 根据场景动态设置按钮文本（使用专用标志而不是g_selectedFlag）
+      if (g_isMapSwitchPointMode) {
+        confirmBtn.textContent = "确认切换";
+      } else {
+        confirmBtn.textContent = "上传选中的地图";
+      }
+      
+      loading.style.display = "none";
+      
+      if (maps.length === 0) {
+        content.style.display = "none";
+        empty.style.display = "block";
+      } else {
+        empty.style.display = "none";
+        content.style.display = "block";
+        
+        // 构建地图列表HTML
+        let html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+        
+        maps.forEach((map, index) => {
+          const sizeKB = (map.pgm_size / 1024).toFixed(1);
+          const yamlStatus = map.yaml_exists ? 
+            '<span style="color:#6ee7b7;">✓ YAML</span>' : 
+            '<span style="color:#f87171;">✗ 缺少YAML</span>';
+          
+          // 使用 number 或 name 作为标识符
+          const mapIdentifier = map.number !== null ? map.number : map.name;
+          const mapDisplayName = map.number !== null ? `地图 ${map.number}` : map.name;
+          // 如果是字符串，需要加引号
+          const mapIdForClick = typeof mapIdentifier === 'string' ? `'${mapIdentifier}'` : mapIdentifier;
+          
+          html += `
+            <label style="display:flex;align-items:center;padding:12px;background:#020617;border:1px solid #374151;border-radius:8px;cursor:pointer;transition:all 0.15s;"
+                   onmouseover="this.style.borderColor='#3b82f6';this.style.background='rgba(59,130,246,0.05)';"
+                   onmouseout="if(!this.querySelector('input').checked){this.style.borderColor='#374151';this.style.background='#020617';}"
+                   onclick="selectMap(${mapIdForClick}, this)">
+              <input type="radio" name="mapSelect" value="${mapIdentifier}" 
+                     style="margin-right:12px;width:16px;height:16px;cursor:pointer;">
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:500;color:#e5e7eb;margin-bottom:4px;">
+                  ${mapDisplayName} (${map.pgm_file})
+                </div>
+                <div style="font-size:11px;color:#9ca3af;display:flex;gap:12px;flex-wrap:wrap;">
+                  <span>📦 ${sizeKB} KB</span>
+                  <span>🕒 ${map.modified_time}</span>
+                  <span>${yamlStatus}</span>
+                </div>
+              </div>
+            </label>
+          `;
+        });
+        
+        html += '</div>';
+        content.innerHTML = html;
+      }
+      
+      overlay.style.display = "flex";
+    }
+
+    function selectMap(mapNumber, labelElement) {
+      g_selectedMapNumber = mapNumber;
+      document.getElementById("confirmUploadBtn").disabled = false;
+      document.getElementById("mapSelectError").textContent = "";
+      
+      // 更新所有label的样式
+      const labels = document.querySelectorAll('#mapListContent label');
+      labels.forEach(label => {
+        if (label === labelElement) {
+          label.style.borderColor = '#3b82f6';
+          label.style.background = 'rgba(59,130,246,0.1)';
+        } else {
+          label.style.borderColor = '#374151';
+          label.style.background = '#020617';
+        }
+      });
+    }
+
+    function closeMapSelectDialog() {
+      document.getElementById("mapSelectOverlay").style.display = "none";
+      g_selectedMapNumber = null;
+      g_isMapSwitchPointMode = false;  // 🔴 重置模式标志
+      // 重置按钮文本为默认值
+      document.getElementById("confirmUploadBtn").textContent = "上传选中的地图";
+    }
+
+    async function confirmUploadMap() {
+      if (g_selectedMapNumber === null) {
+        document.getElementById("mapSelectError").textContent = "请先选择一个地图";
+        return;
+      }
+      
+      const errorEl = document.getElementById("mapSelectError");
+      const confirmBtn = document.getElementById("confirmUploadBtn");
+      const originalText = confirmBtn.textContent;
+      
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "处理中...";
+      errorEl.textContent = "";
+      errorEl.style.color = "#facc15";
+      
+      // 🔴 判断当前场景：如果是地图切换点场景（使用专用标志）
+      if (g_isMapSwitchPointMode) {
+        try {
+          // 🔴 步骤1：获取当前位置
+          errorEl.textContent = "正在获取当前位置...";
+          const posRes = await fetch("/api/get_position");
+          if (!posRes.ok) {
+            throw new Error("位置获取失败");
+          }
+          const pose = await posRes.json();
+          
+          // 🔴 步骤2：记录地图切换点（包含目标地图编号）
+          errorEl.textContent = "正在记录地图切换点...";
+          const addRes = await fetch("/api/add_point", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              x: pose.x,
+              y: pose.y,
+              yaw: pose.yaw,
+              px: pose.px,
+              py: pose.py,
+              keypointflag: 5,  // 地图切换点
+              map_id: pose.map_id || 1,  // 当前地图编号
+              target_map_id: g_selectedMapNumber  // 🔴 目标地图编号
+            })
+          });
+          
+          if (!addRes.ok) {
+            throw new Error("记录点失败");
+          }
+          
+          const addResult = await addRes.json();
+          console.log("地图切换点已记录:", addResult);
+          
+          // 🔴 步骤3：触发SLAM地图切换
+          errorEl.textContent = `正在切换到地图${g_selectedMapNumber}...`;
+          const switchRes = await fetch("/api/trigger_map_switch", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              target_map_id: g_selectedMapNumber,
+              current_x: pose.x,
+              current_y: pose.y,
+              current_yaw: pose.yaw
+            })
+          });
+          
+          if (!switchRes.ok) {
+            const err = await switchRes.json();
+            throw new Error(err.error || "地图切换失败");
+          }
+          
+          // 🔴 步骤4：等待SLAM完成（轮询状态）
+          errorEl.textContent = "正在等待SLAM重定位...";
+          await waitForMapSwitchComplete();
+          
+          // 🔴 步骤5：完成
+          errorEl.style.color = "#6ee7b7";
+          errorEl.textContent = `✓ 地图切换点已打点，已切换到地图${g_selectedMapNumber}`;
+          
+          // 等待2秒后关闭弹窗
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          closeMapSelectDialog();
+          
+          // 刷新显示
+          setMarkStatus(`地图切换点已打点（目标地图${g_selectedMapNumber}）`, false);
+          refreshPoints();
+          refreshOverlay();
+          await loadMap();  // 重新加载地图
+          
+        } catch(e) {
+          errorEl.style.color = "#fca5a5";
+          errorEl.textContent = "失败: " + e.message;
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = originalText;
+          console.error("地图切换点打点失败:", e);
+        }
+        return;  // 地图切换点场景结束
+      }
+      
+      // 🔴 原有逻辑：上传地图场景
+      // 显示友好的地图标识
+      const displayIdentifier = typeof g_selectedMapNumber === 'number' ? 
+        `地图 ${g_selectedMapNumber}` : g_selectedMapNumber;
+      errorEl.textContent = `正在上传${displayIdentifier}...`;
+      
+      try {
+        const r = await fetch("/api/upload_selected_map", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ map_number: g_selectedMapNumber })
+        });
+        
+        if (!r.ok) {
+          const err = await r.json();
+          errorEl.style.color = "#fca5a5";
+          errorEl.textContent = "上传失败: " + (err.error || "未知错误");
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = originalText;
+          return;
+        }
+        
+        const res = await r.json();
+        console.log("上传成功:", res);
+        
+        // 获取上传的地图名称（从地图列表中查找）
+        const selectedMap = g_mapList.find(m => 
+          (m.number !== null && m.number === g_selectedMapNumber) || 
+          (m.name === g_selectedMapNumber)
+        );
+        const mapName = selectedMap ? selectedMap.name : (typeof g_selectedMapNumber === 'string' ? g_selectedMapNumber : `scans${g_selectedMapNumber}`);
+        
+        // 切换到新上传的地图
+        try {
+          const switchRes = await fetch("/api/switch_map", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ map_name: mapName })
+          });
+          
+          if (switchRes.ok) {
+            console.log(`✓ 已切换到地图: ${mapName}`);
+          } else {
+            console.warn(`✗ 地图切换失败，但上传成功`);
+          }
+        } catch(switchErr) {
+          console.warn("地图切换请求失败:", switchErr);
+        }
+        
+        // 上传成功，关闭对话框
+        closeMapSelectDialog();
+        
+        // 更新状态显示
+        const statusEl = document.getElementById("mapStatus");
+        statusEl.textContent = `${displayIdentifier} 已上传并切换`;
+        statusEl.style.color = "#6ee7b7";
+        
+        // 等待一小段时间让FTP服务器保存文件
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // 刷新地图显示
+        await loadMap();
+        
+      } catch(e) {
+        errorEl.style.color = "#fca5a5";
+        errorEl.textContent = "上传失败: " + e.message;
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = originalText;
+        console.error("confirmUploadMap error:", e);
+      }
+    }
+
+    // 🔴 新增：等待地图切换完成的函数
+    async function waitForMapSwitchComplete() {
+      const maxAttempts = 60;  // 最多等待60秒（地图切换可能需要40-50秒）
+      const interval = 1000;   // 每秒检查一次
+      
+      for (let i = 0; i < maxAttempts; i++) {
+        try {
+          const r = await fetch("/api/check_map_switch_status");
+          if (r.ok) {
+            const res = await r.json();
+            console.log(`[${i + 1}/${maxAttempts}] 地图切换状态: ${res.status}`);
+            
+            if (res.status === "completed") {
+              console.log("✓ 地图切换完成");
+              return;  // 切换完成
+            } else if (res.status === "idle") {
+              // 如果状态变为idle但没有completed，说明切换失败
+              throw new Error("地图切换失败（状态异常：idle）");
+            }
+            // status === "in_progress" 继续等待
+          } else {
+            console.warn(`检查状态失败: HTTP ${r.status}`);
+          }
+        } catch(e) {
+          console.warn("检查地图切换状态失败:", e);
+        }
+        
+        // 等待1秒后重试
+        await new Promise(resolve => setTimeout(resolve, interval));
+      }
+      
+      throw new Error("地图切换超时（超过60秒）");
+    }
+
+    async function refreshOverlay() {
+      if (g_mapWidth === 0) return; // 地图还没加载
+      try {
+        const [pixRes, ptRes] = await Promise.all([
+          fetch("/api/get_pixels"),
+          fetch("/api/get_points")
+        ]);
+        const pixels = await pixRes.json();
+        const points = await ptRes.json();
+        drawPath(pixels, points);
+        drawPoseMarker();
+      } catch(e) {
+        console.warn("refreshOverlay error:", e);
+      }
+    }
+
+    // ===== 打点功能 =====
+    // 点类型注册表：{ value: number, label: string }
+    // 注意：value 必须与后端 KEYPONITTYPE 枚举一致（从0开始）
+    const g_typeRegistry = [
+      { value: 0, label: "普通点" },        // NORMAL = 0
+      { value: 1, label: "视觉点" },        // VISION = 1
+      { value: 2, label: "充电点" },        // CHARGE = 2
+      { value: 3, label: "等待点" },        // WAIT = 3
+      { value: 4, label: "电梯内点" },      // INELEVATOR = 4
+      { value: 5, label: "地图切换点" },    // MAPSWITCH = 5
+    ];
+    // 调色板（循环使用）- 颜色顺序对应 value 0,1,2,3,4,5
+    const TYPE_PALETTE = ["#60a5fa","#f59e0b","#a78bfa","#34d399","#f87171","#fb923c",
+                          "#e879f9","#2dd4bf","#f472b6","#a3e635"];
+
+    let g_selectedFlag = -1;
+    let g_isMapSwitchPointMode = false;  // 🔴 新增：标记是否为地图切换点模式
+
+    function getTypeColor(value) {
+      const idx = g_typeRegistry.findIndex(t => t.value === value);
+      return TYPE_PALETTE[(idx >= 0 ? idx : value) % TYPE_PALETTE.length];
+    }
+
+    function getTypeLabel(value) {
+      const t = g_typeRegistry.find(t => t.value === value);
+      return t ? t.label : `类型${value}`;
+    }
+
+    function rebuildSelect() {
+      const sel = document.getElementById("pointTypeSelect");
+      const prev = sel.value;
+      // 保留第一个 placeholder option
+      while (sel.options.length > 1) sel.remove(1);
+      g_typeRegistry.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t.value;
+        opt.textContent = `${t.value} - ${t.label}`;
+        sel.appendChild(opt);
+      });
+      // 恢复之前的选择
+      if (prev !== "") sel.value = prev;
+    }
+
+    function onTypeChange() {
+      const sel = document.getElementById("pointTypeSelect");
+      const val = sel.value;
+      if (val === "" || val === null) return;
+      g_selectedFlag = parseInt(val);
+      const markBtn = document.getElementById("markBtn");
+      markBtn.disabled = false;
+      markBtn.style.opacity = "1";
+      markBtn.style.cursor = "pointer";
+      setMarkStatus(`已选择：${getTypeLabel(g_selectedFlag)}（${g_selectedFlag}），可以打点`, false);
+    }
+
+    // ---- 添加类型弹窗 ----
+    function openAddTypeDialog() {
+      document.getElementById("newTypeName").value  = "";
+      document.getElementById("newTypeValue").value = "";
+      document.getElementById("addTypeError").textContent = "";
+      const overlay = document.getElementById("addTypeOverlay");
+      overlay.style.display = "flex";
+    }
+
+    function closeAddTypeDialog() {
+      document.getElementById("addTypeOverlay").style.display = "none";
+    }
+
+    function confirmAddType() {
+      const name  = document.getElementById("newTypeName").value.trim();
+      const valRaw = document.getElementById("newTypeValue").value.trim();
+      const errEl  = document.getElementById("addTypeError");
+
+      if (!name) { errEl.textContent = "请输入类型名称"; return; }
+      if (valRaw === "") { errEl.textContent = "请输入类型数字"; return; }
+      const value = parseInt(valRaw);
+      if (isNaN(value) || value < 0) { errEl.textContent = "类型数字须为非负整数"; return; }
+      if (g_typeRegistry.some(t => t.value === value)) {
+        errEl.textContent = `数字 ${value} 已存在（${getTypeLabel(value)}）`; return;
+      }
+
+      g_typeRegistry.push({ value, label: name });
+      // 按 value 排序保持整洁
+      g_typeRegistry.sort((a, b) => a.value - b.value);
+      rebuildSelect();
+      closeAddTypeDialog();
+      setMarkStatus(`已添加类型：${value} - ${name}`, false);
+    }
+
+    // 按 Esc 关闭弹窗
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        closeAddTypeDialog();
+        closeMapSelectDialog();
+      }
+    });
+
+    function setMarkStatus(msg, isError) {
+      const el = document.getElementById("markStatus");
+      el.textContent = msg;
+      el.style.color = isError ? "#fca5a5" : "#6ee7b7";
+    }
+
+    function renderTable(points) {
+      const tbody = document.getElementById("pointTableBody");
+      const empty = document.getElementById("pointEmpty");
+      tbody.innerHTML = "";
+      if (!points || points.length === 0) {
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+      points.forEach(p => {
+        const tr = document.createElement("tr");
+        tr.style.borderBottom = "1px solid #1f2937";
+        const yawDeg = (p.yaw * 180 / Math.PI).toFixed(1);
+        tr.innerHTML = `
+          <td style="padding:5px 10px;">${p.seq}</td>
+          <td style="padding:5px 10px;">${p.x.toFixed(6)}</td>
+          <td style="padding:5px 10px;">${p.y.toFixed(6)}</td>
+          <td style="padding:5px 10px;">${p.yaw.toFixed(4)} (${yawDeg}°)</td>
+          <td style="padding:5px 10px;">${p.keypointflag} - ${getTypeLabel(p.keypointflag)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    let g_currentPose = null;
+
+    async function updatePositionDisplay() {
+      try {
+        const r = await fetch("/api/get_position");
+        if (!r.ok) throw new Error("位置获取失败");
+        const pose = await r.json();
+        g_currentPose = pose;
+        const yawDeg = (pose.yaw * 180 / Math.PI).toFixed(1);  // 转换为角度
+        // 地图编号：如果存在且不为undefined/null，则显示（包括0）
+        const mapIdText = (pose.map_id !== undefined && pose.map_id !== null) ? `地图${pose.map_id} | ` : '';
+        document.getElementById("posDisplay").textContent =
+          `${mapIdText}当前位置：x=${pose.x.toFixed(4)}  y=${pose.y.toFixed(4)}  yaw=${pose.yaw.toFixed(4)} rad (${yawDeg}°)`;
+        
+        // 调试：在控制台输出完整的pose数据
+        console.log('Position data:', pose);
+      } catch (e) {
+        document.getElementById("posDisplay").textContent = "当前位置：获取失败";
+      }
+    }
+
+    function drawPoseMarker(timestamp = performance.now()) {
+      const poseCanvas = document.getElementById("poseCanvas");
+      const mapCanvas  = document.getElementById("mapCanvas");
+      if (!poseCanvas || !mapCanvas || mapCanvas.width === 0 || mapCanvas.height === 0) return;
+      poseCanvas.width  = mapCanvas.width;
+      poseCanvas.height = mapCanvas.height;
+
+      const ctx = poseCanvas.getContext("2d");
+      ctx.clearRect(0, 0, poseCanvas.width, poseCanvas.height);
+      if (!g_currentPose || typeof g_currentPose.px !== "number" || typeof g_currentPose.py !== "number") return;
+
+      const x = g_currentPose.px;
+      const y = g_currentPose.py;
+      const yaw = g_currentPose.yaw || 0;  // 获取偏航角（弧度）
+      const size = 16;
+      // 增强呼吸效果：更大的振幅和更慢的频率
+      const pulse = 0.7 + 0.3 * Math.sin(timestamp / 600);
+
+      ctx.save();
+      ctx.translate(x, y);
+      // 根据偏航角旋转
+      ctx.rotate(-yaw + Math.PI / 2);
+
+      // 增强阴影效果（随呼吸变化）
+      ctx.shadowColor = `rgba(59, 130, 246, ${0.6 * pulse})`;
+      ctx.shadowBlur = 20 + 10 * pulse;
+
+      // ========== 尾巴（摇摆动画）==========
+      const tailWag = Math.sin(timestamp / 180) * 0.35;
+      ctx.save();
+      ctx.translate(0, size * 0.7);
+      ctx.rotate(tailWag);
+      
+      // 尾巴多层渐变（增强呼吸效果）
+      const tailGradient = ctx.createLinearGradient(0, 0, 0, size * 0.9);
+      tailGradient.addColorStop(0, `rgba(255, 180, 100, ${0.85 * pulse})`);
+      tailGradient.addColorStop(0.5, `rgba(255, 200, 120, ${0.9 * pulse})`);
+      tailGradient.addColorStop(1, `rgba(255, 230, 160, ${pulse})`);
+      
+      ctx.beginPath();
+      ctx.moveTo(-size * 0.12, 0);
+      ctx.quadraticCurveTo(-size * 0.22, size * 0.45, -size * 0.08, size * 0.9);
+      ctx.quadraticCurveTo(0, size * 0.95, size * 0.08, size * 0.9);
+      ctx.quadraticCurveTo(size * 0.22, size * 0.45, size * 0.12, 0);
+      ctx.closePath();
+      ctx.fillStyle = tailGradient;
+      ctx.fill();
+      
+      // 尾巴尖端（蓬松发光效果）
+      const tipGradient = ctx.createRadialGradient(0, size * 0.9, 0, 0, size * 0.9, size * 0.25);
+      tipGradient.addColorStop(0, `rgba(255, 240, 200, ${pulse})`);
+      tipGradient.addColorStop(0.6, `rgba(255, 220, 160, ${0.95 * pulse})`);
+      tipGradient.addColorStop(1, `rgba(255, 200, 120, ${0.7 * pulse})`);
+      
+      ctx.beginPath();
+      ctx.arc(0, size * 0.9, size * 0.22, 0, Math.PI * 2);
+      ctx.fillStyle = tipGradient;
+      ctx.fill();
+      ctx.restore();
+
+      // ========== 头部（多层渐变呼吸效果）==========
+      // 外层光晕
+      const glowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, size * 1.1);
+      glowGradient.addColorStop(0, `rgba(255, 230, 180, ${0.4 * pulse})`);
+      glowGradient.addColorStop(0.7, `rgba(255, 200, 120, ${0.2 * pulse})`);
+      glowGradient.addColorStop(1, `rgba(255, 180, 100, 0)`);
+      
+      ctx.beginPath();
+      ctx.arc(0, 0, size * 1.05, 0, Math.PI * 2);
+      ctx.fillStyle = glowGradient;
+      ctx.fill();
+      
+      // 主头部渐变
+      const headGradient = ctx.createRadialGradient(0, -size * 0.2, size * 0.1, 0, 0, size * 0.85);
+      headGradient.addColorStop(0, `rgba(255, 240, 200, ${pulse})`);
+      headGradient.addColorStop(0.3, `rgba(255, 220, 160, ${0.98 * pulse})`);
+      headGradient.addColorStop(0.7, `rgba(240, 190, 120, ${0.92 * pulse})`);
+      headGradient.addColorStop(1, `rgba(220, 160, 90, ${0.85 * pulse})`);
+      
+      ctx.beginPath();
+      ctx.arc(0, 0, size * 0.8, 0, Math.PI * 2);
+      ctx.fillStyle = headGradient;
+      ctx.fill();
+      
+      // 头部轮廓（呼吸发光）
+      ctx.strokeStyle = `rgba(255, 200, 120, ${0.6 * pulse})`;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // ========== 耳朵（渐变呼吸）==========
+      const earGradient = ctx.createLinearGradient(0, -size * 0.9, 0, -size * 0.5);
+      earGradient.addColorStop(0, `rgba(230, 170, 100, ${0.95 * pulse})`);
+      earGradient.addColorStop(1, `rgba(210, 150, 80, ${0.88 * pulse})`);
+      
+      // 左耳
+      ctx.beginPath();
+      ctx.moveTo(-size * 0.5, -size * 0.45);
+      ctx.quadraticCurveTo(-size * 0.85, -size * 1.0, -size * 0.35, -size * 0.85);
+      ctx.quadraticCurveTo(-size * 0.28, -size * 0.6, -size * 0.35, -size * 0.45);
+      ctx.closePath();
+      ctx.fillStyle = earGradient;
+      ctx.fill();
+      ctx.strokeStyle = `rgba(200, 140, 70, ${0.7 * pulse})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      
+      // 右耳
+      ctx.beginPath();
+      ctx.moveTo(size * 0.5, -size * 0.45);
+      ctx.quadraticCurveTo(size * 0.85, -size * 1.0, size * 0.35, -size * 0.85);
+      ctx.quadraticCurveTo(size * 0.28, -size * 0.6, size * 0.35, -size * 0.45);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // ========== 口鼻区域（渐变呼吸）==========
+      const snoutGradient = ctx.createRadialGradient(0, size * 0.15, 0, 0, size * 0.15, size * 0.45);
+      snoutGradient.addColorStop(0, `rgba(255, 245, 220, ${pulse})`);
+      snoutGradient.addColorStop(1, `rgba(255, 230, 190, ${0.92 * pulse})`);
+      
+      ctx.beginPath();
+      ctx.ellipse(0, size * 0.1, size * 0.42, size * 0.38, 0, 0, Math.PI * 2);
+      ctx.fillStyle = snoutGradient;
+      ctx.fill();
+
+      // ========== 眼睛（大而有神，带呼吸）==========
+      // 眼白
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.98 * pulse})`;
+      ctx.beginPath();
+      ctx.ellipse(-size * 0.28, -size * 0.15, size * 0.16, size * 0.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(size * 0.28, -size * 0.15, size * 0.16, size * 0.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 眼珠
+      ctx.fillStyle = `rgba(60, 40, 30, ${pulse})`
+      ctx.beginPath();
+      ctx.arc(-size * 0.28, -size * 0.12, size * 0.11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(size * 0.28, -size * 0.12, size * 0.11, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 高光（随呼吸闪烁）
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.95 * pulse})`;
+      ctx.beginPath();
+      ctx.arc(-size * 0.24, -size * 0.17, size * 0.05, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(size * 0.32, -size * 0.17, size * 0.05, 0, Math.PI * 2);
+      ctx.fill();
+
+      // ========== 鼻子（发光呼吸）==========
+      const noseGradient = ctx.createRadialGradient(-size * 0.05, -size * 0.05, 0, 0, 0, size * 0.14);
+      noseGradient.addColorStop(0, `rgba(80, 60, 50, ${pulse})`);
+      noseGradient.addColorStop(1, `rgba(50, 35, 30, ${0.95 * pulse})`);
+      
+      ctx.beginPath();
+      ctx.arc(0, size * 0.05, size * 0.13, 0, Math.PI * 2);
+      ctx.fillStyle = noseGradient;
+      ctx.fill();
+      
+      // 鼻子高光
+      ctx.beginPath();
+      ctx.arc(-size * 0.05, -size * 0.02, size * 0.05, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.7 * pulse})`;
+      ctx.fill();
+
+      // ========== 嘴巴（微笑）==========
+      ctx.strokeStyle = `rgba(60, 40, 30, ${0.92 * pulse})`;
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = "round";
+      
+      ctx.beginPath();
+      ctx.moveTo(0, size * 0.08);
+      ctx.quadraticCurveTo(-size * 0.16, size * 0.22, -size * 0.28, size * 0.18);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(0, size * 0.08);
+      ctx.quadraticCurveTo(size * 0.16, size * 0.22, size * 0.28, size * 0.18);
+      ctx.stroke();
+
+      // ========== 方向指示箭头（发光呼吸）==========
+      const arrowGradient = ctx.createLinearGradient(0, -size * 1.15, 0, -size * 0.85);
+      arrowGradient.addColorStop(0, `rgba(59, 130, 246, ${pulse})`);
+      arrowGradient.addColorStop(1, `rgba(96, 165, 250, ${0.85 * pulse})`);
+      
+      ctx.fillStyle = arrowGradient;
+      ctx.strokeStyle = `rgba(37, 99, 235, ${0.95 * pulse})`;
+      ctx.lineWidth = 2.5;
+      
+      ctx.beginPath();
+      ctx.moveTo(0, -size * 1.15);
+      ctx.lineTo(-size * 0.18, -size * 0.98);
+      ctx.lineTo(-size * 0.07, -size * 0.98);
+      ctx.lineTo(-size * 0.07, -size * 0.88);
+      ctx.lineTo(size * 0.07, -size * 0.88);
+      ctx.lineTo(size * 0.07, -size * 0.98);
+      ctx.lineTo(size * 0.18, -size * 0.98);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+      ctx.restore();
+    }
+
+    function animatePoseMarker(timestamp) {
+      drawPoseMarker(timestamp);
+      requestAnimationFrame(animatePoseMarker);
+    }
+
+    function startPositionPolling() {
+      updatePositionDisplay();
+      setInterval(updatePositionDisplay, 500);
+      requestAnimationFrame(animatePoseMarker);
+    }
+
+    async function refreshPoints() {
+      try {
+        const r = await fetch("/api/get_points");
+        const pts = await r.json();
+        renderTable(pts);
+      } catch(e) {
+        console.warn("刷新点列表失败:", e);
+      }
+    }
+
+    async function fetchAndMark() {
+      if (g_selectedFlag < 0) {
+        setMarkStatus("请先选择点类型", true);
+        return;
+      }
+      
+      // 🔴 新增：如果是地图切换点（keypointflag=5），弹出地图选择框
+      if (g_selectedFlag === 5) {
+        g_isMapSwitchPointMode = true;  // 🔴 设置地图切换点模式标志
+        setMarkStatus("正在获取地图列表...", false);
+        await requestMapFromSlam();  // 获取地图列表并显示选择框
+        return;  // 不直接打点，等待用户选择地图
+      }
+      
+      // 原有的打点逻辑（普通点）
+      setMarkStatus("正在打点...", false);
+      let pose;
+      try {
+        const r = await fetch("/api/get_position");
+        if (!r.ok) { setMarkStatus("位置获取失败：SLAM 超时或未连接", true); return; }
+        pose = await r.json();
+      } catch(e) {
+        setMarkStatus("网络错误：" + e.message, true);
+        return;
+      }
+
+      document.getElementById("posDisplay").textContent =
+        `地图${pose.map_id || 1} | 当前位置：x=${pose.x.toFixed(4)}  y=${pose.y.toFixed(4)}  yaw=${pose.yaw.toFixed(4)} rad (${(pose.yaw * 180 / Math.PI).toFixed(1)}°)`;
+
+      const flag = g_selectedFlag;
+      
+      // 如果是换图点（flag=5），提示用户
+      if (flag === 5) {
+        const mapId = pose.map_id || 1;
+        console.log(`打换图点，当前地图编号: ${mapId}`);
+      }
+      
+      try {
+        const r = await fetch("/api/add_point", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            x: pose.x, 
+            y: pose.y, 
+            yaw: pose.yaw, 
+            px: pose.px,              // 添加像素坐标X
+            py: pose.py,              // 添加像素坐标Y
+            keypointflag: flag,
+            map_id: pose.map_id || 1  // 添加地图编号
+          })
+        });
+        const res = await r.json();
+        const mapInfo = (flag === 5) ? ` [地图${pose.map_id || 1}]` : '';
+        setMarkStatus(`打点成功，Seq=${res.seq}，类型：${getTypeLabel(flag)}（${flag}）${mapInfo}`, false);
+        refreshPoints();
+        refreshOverlay();
+      } catch(e) {
+        setMarkStatus("打点失败：" + e.message, true);
+      }
+    }
+
+    async function undoPoint() {
+      try {
+        await fetch("/api/undo_point", {method: "DELETE"});
+        setMarkStatus("已撤销最后一个点", false);
+        refreshPoints();
+        refreshOverlay();
+      } catch(e) {
+        setMarkStatus("撤销失败：" + e.message, true);
+      }
+    }
+
+    async function clearPoints() {
+      if (!confirm("确认清空所有路径点？")) return;
+      try {
+        await fetch("/api/clear_points", {method: "DELETE"});
+        setMarkStatus("已清空所有路径点", false);
+        refreshPoints();
+        refreshOverlay();
+      } catch(e) {
+        setMarkStatus("清空失败：" + e.message, true);
+      }
+    }
+
+    async function savePoints() {
+      try {
+        const r = await fetch("/api/save_points", {method: "POST"});
+        const res = await r.json();
+        if (r.ok && res.status === "ok") {
+          setMarkStatus(`已保存 ${res.count} 个点到文件`, false);
+        } else {
+          setMarkStatus(`保存失败：${res.error || '未知错误'}`, true);
+        }
+      } catch(e) {
+        setMarkStatus("保存失败：" + e.message, true);
+      }
+    }
+
+    function downloadXml() {
+      window.location.href = "/api/download_xml";
+    }
+
+    // ===== 地图切换功能 =====
+    async function switchMap() {
+      const mapName = prompt("请输入新地图名称（例如：二楼）：");
+      if (!mapName) return;
+      
+      if (!confirm(`确认切换到新地图"${mapName}"？\n当前地图的路径将被保存，新地图将从空白开始打点。`)) return;
+      
+      try {
+        const r = await fetch("/api/switch_map", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({map_name: mapName})
+        });
+        const res = await r.json();
+        if (res.status === "ok") {
+          document.getElementById("currentMapInfo").textContent = 
+            `当前地图: ${res.map_name} (ID: ${res.map_id})`;
+          setMarkStatus(`已切换到新地图：${res.map_name}`, false);
+          refreshPoints();
+          refreshOverlay();
+        }
+      } catch(e) {
+        setMarkStatus("切换地图失败：" + e.message, true);
+      }
+    }
+
+    async function updateCurrentMapInfo() {
+      try {
+        // 从位置信息中获取地图编号
+        const r = await fetch("/api/get_position");
+        if (r.ok) {
+          const pose = await r.json();
+          if (pose.map_id) {
+            document.getElementById("currentMapInfo").textContent = 
+              `当前地图: 地图${pose.map_id}`;
+            return;
+          }
+        }
+        
+        // 如果获取失败，尝试从地图管理接口获取
+        const r2 = await fetch("/api/get_current_map");
+        const res = await r2.json();
+        document.getElementById("currentMapInfo").textContent = 
+          `当前地图: 地图${res.map_id}`;
+      } catch(e) {
+        console.warn("获取当前地图信息失败:", e);
+        document.getElementById("currentMapInfo").textContent = "当前地图: 未知";
+      }
+    }
+
+    // ===== 保存地图并退出建图 =====
+    async function saveMapAndExit() {
+      const statusEl = document.getElementById("mapStatus");
+      const originalText = statusEl.textContent;
+      const originalColor = statusEl.style.color;
+      
+      statusEl.textContent = "正在保存地图...";
+      statusEl.style.color = "#facc15";
+      
+      try {
+        const r = await fetch("/api/save_map_and_exit", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"}
+        });
+        
+        if (!r.ok) {
+          const err = await r.json();
+          statusEl.textContent = "保存失败: " + (err.error || "未知错误");
+          statusEl.style.color = "#f87171";
+          return;
+        }
+        
+        const res = await r.json();
+        statusEl.textContent = "地图已保存";
+        statusEl.style.color = "#6ee7b7";
+        
+      } catch(e) {
+        statusEl.textContent = "保存失败: " + e.message;
+        statusEl.style.color = "#f87171";
+        console.error("saveMapAndExit error:", e);
+      }
+    }
+
+    // 页面加载时刷新点列表，并尝试加载地图
+    refreshPoints();
+    startPositionPolling();
+    loadMap();
+    updateCurrentMapInfo();
+  </script>
+</body>
+</html>
+
+

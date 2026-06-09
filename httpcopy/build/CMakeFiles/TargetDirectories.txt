@@ -1,0 +1,3 @@
+/home/orangepi/httpcopy/build/CMakeFiles/configserver.dir
+/home/orangepi/httpcopy/build/CMakeFiles/edit_cache.dir
+/home/orangepi/httpcopy/build/CMakeFiles/rebuild_cache.dir

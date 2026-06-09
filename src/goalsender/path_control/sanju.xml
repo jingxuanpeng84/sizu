@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+    <path Seq="1" Type="ulong">
+        <x Type="double">1.9251619460200344</x>
+        <y Type="double">0.046223413635155891</y>
+        <yaw Type="double">0.099525635360945122</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="2" Type="ulong">
+        <x Type="double">5.6507334941589997</x>
+        <y Type="double">0.30552079550147021</y>
+        <yaw Type="double">0.13018095814103026</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="3" Type="ulong">
+        <x Type="double">5.2310513515001462</x>
+        <y Type="double">4.9674684967358225</y>
+        <yaw Type="double">1.6555349440770153</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="4" Type="ulong">
+        <x Type="double">5.0594077170276677</x>
+        <y Type="double">8.9016417013225464</y>
+        <yaw Type="double">1.5867537729791241</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="5" Type="ulong">
+        <x Type="double">4.8086267890162224</x>
+        <y Type="double">13.299737308930608</y>
+        <yaw Type="double">1.6328108280684077</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="6" Type="ulong">
+        <x Type="double">4.3797849407216285</x>
+        <y Type="double">21.696839927978562</y>
+        <yaw Type="double">1.630125764126263</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="7" Type="ulong">
+        <x Type="double">-0.18179224927765034</x>
+        <y Type="double">21.277907207877835</y>
+        <yaw Type="double">-3.0331218969448916</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="8" Type="ulong">
+        <x Type="double">4.6422769730199711</x>
+        <y Type="double">21.623870455081644</y>
+        <yaw Type="double">0.095572596803200127</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="9" Type="ulong">
+        <x Type="double">5.5810379239573136</x>
+        <y Type="double">-0.090570873228180207</y>
+        <yaw Type="double">-1.4959882763849666</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+    <path Seq="10" Type="ulong">
+        <x Type="double">0.7614651470352064</x>
+        <y Type="double">-0.072580336345915833</y>
+        <yaw Type="double">-3.0161921549926842</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+        <mapnum Type="uint">0</mapnum>
+    </path>
+</Root>

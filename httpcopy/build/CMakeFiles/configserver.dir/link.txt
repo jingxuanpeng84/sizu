@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/configserver.dir/main.cpp.o CMakeFiles/configserver.dir/src/network/socket.cpp.o CMakeFiles/configserver.dir/src/network/networkBase.cpp.o CMakeFiles/configserver.dir/src/network/tcpUdp.cpp.o CMakeFiles/configserver.dir/src/ftp_server.cpp.o -o configserver 

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- 雷达服务端 - 模拟数据测试版本 -->
+  
+  <!-- 雷达端配置 -->
+  <arg name="laddar_ip" default="192.168.31.70" />  <!-- 空字符串表示监听所有接口(INADDR_ANY) -->
+  <arg name="laddar_port" default="6003" />
+  
+  <!-- 机器人端配置 -->
+  <arg name="robot_ip" default="192.168.1.10" />
+  <arg name="robot_port" default="9090" />
+  
+  <!-- 启动模拟雷达服务端节点 -->
+  <node name="laddar_server_mock" pkg="goal_sender" type="laddar_server_mock" 
+        output="screen" required="true">
+    <param name="laddar_ip" value="$(arg laddar_ip)" />
+    <param name="laddar_port" value="$(arg laddar_port)" />
+    <param name="robot_ip" value="$(arg robot_ip)" />
+    <param name="robot_port" value="$(arg robot_port)" />
+  </node>
+  
+  <!-- 说明信息 -->
+  <node name="mock_info" pkg="rostopic" type="rostopic" 
+        args="echo /rosout" output="screen" launch-prefix="echo '
+========================================
+雷达服务端 - 模拟数据测试版本
+========================================
+雷达端: $(arg laddar_ip):$(arg laddar_port)
+机器人端: $(arg robot_ip):$(arg robot_port)
+数据模式: 模拟数据（圆形轨迹 + 方形房间）
+更新频率: 10Hz
+========================================
+'" />
+
+</launch>

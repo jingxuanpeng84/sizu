@@ -1,0 +1,300 @@
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0 16:30 ?        00:00:04 /sbin/init splash
+root           2       0  0 16:30 ?        00:00:00 [kthreadd]
+root           3       2  0 16:30 ?        00:00:00 [rcu_gp]
+root           4       2  0 16:30 ?        00:00:00 [rcu_par_gp]
+root           7       2  0 16:30 ?        00:00:00 [kworker/u16:0-devfreq_wq]
+root           8       2  0 16:30 ?        00:00:00 [mm_percpu_wq]
+root           9       2  0 16:30 ?        00:00:00 [rcu_tasks_rude_]
+root          10       2  0 16:30 ?        00:00:00 [rcu_tasks_trace]
+root          11       2  0 16:30 ?        00:00:01 [ksoftirqd/0]
+root          12       2  0 16:30 ?        00:00:01 [rcu_sched]
+root          13       2  0 16:30 ?        00:00:00 [migration/0]
+root          14       2  0 16:30 ?        00:00:00 [cpuhp/0]
+root          15       2  0 16:30 ?        00:00:00 [cpuhp/1]
+root          16       2  0 16:30 ?        00:00:00 [migration/1]
+root          17       2  0 16:30 ?        00:00:00 [ksoftirqd/1]
+root          20       2  0 16:30 ?        00:00:00 [cpuhp/2]
+root          21       2  0 16:30 ?        00:00:00 [migration/2]
+root          22       2  0 16:30 ?        00:00:00 [ksoftirqd/2]
+root          25       2  0 16:30 ?        00:00:00 [cpuhp/3]
+root          26       2  0 16:30 ?        00:00:00 [migration/3]
+root          27       2  0 16:30 ?        00:00:00 [ksoftirqd/3]
+root          30       2  0 16:30 ?        00:00:00 [cpuhp/4]
+root          31       2  0 16:30 ?        00:00:00 [migration/4]
+root          32       2  0 16:30 ?        00:00:00 [ksoftirqd/4]
+root          35       2  0 16:30 ?        00:00:00 [cpuhp/5]
+root          36       2  0 16:30 ?        00:00:00 [migration/5]
+root          37       2  0 16:30 ?        00:00:00 [ksoftirqd/5]
+root          40       2  0 16:30 ?        00:00:00 [cpuhp/6]
+root          41       2  0 16:30 ?        00:00:00 [migration/6]
+root          42       2  0 16:30 ?        00:00:00 [ksoftirqd/6]
+root          45       2  0 16:30 ?        00:00:00 [cpuhp/7]
+root          46       2  0 16:30 ?        00:00:00 [migration/7]
+root          47       2  0 16:30 ?        00:00:00 [ksoftirqd/7]
+root          50       2  0 16:30 ?        00:00:00 [kdevtmpfs]
+root          51       2  0 16:30 ?        00:00:00 [netns]
+root          55       2  0 16:30 ?        00:00:00 [kworker/2:1-events]
+root          60       2  0 16:30 ?        00:00:00 [kauditd]
+root          61       2  0 16:30 ?        00:00:00 [oom_reaper]
+root          62       2  0 16:30 ?        00:00:00 [writeback]
+root         106       2  0 16:30 ?        00:00:00 [kintegrityd]
+root         107       2  0 16:30 ?        00:00:00 [kblockd]
+root         108       2  0 16:30 ?        00:00:00 [blkcg_punt_bio]
+root         109       2  0 16:30 ?        00:00:00 [kconsole]
+root         110       2  0 16:30 ?        00:00:00 [tpm_dev_wq]
+root         111       2  0 16:30 ?        00:00:00 [devfreq_wq]
+root         112       2  0 16:30 ?        00:00:00 [watchdogd]
+root         113       2  0 16:30 ?        00:00:01 [kworker/u16:1-devfreq_wq]
+root         114       2  0 16:30 ?        00:00:00 [rpciod]
+root         115       2  0 16:30 ?        00:00:00 [kworker/5:1H+kblockd]
+root         116       2  0 16:30 ?        00:00:00 [kworker/u17:0-kbase_pm_poweroff_wait]
+root         117       2  0 16:30 ?        00:00:00 [xprtiod]
+root         118       2  0 16:30 ?        00:00:00 [cfg80211]
+root         119       2  0 16:30 ?        00:00:00 [irq/115-rockchi]
+root         139       2  0 16:30 ?        00:00:00 [kswapd0]
+root         140       2  0 16:30 ?        00:00:00 [nfsiod]
+root         141       2  0 16:30 ?        00:00:00 [kworker/4:1H-kblockd]
+root         143       2  0 16:30 ?        00:00:00 [kthrotld]
+root         144       2  0 16:30 ?        00:00:00 [irq/24-rockchip]
+root         145       2  0 16:30 ?        00:00:00 [irq/25-rockchip]
+root         146       2  0 16:30 ?        00:00:00 [kworker/6:2-events]
+root         147       2  0 16:30 ?        00:00:00 [irq/26-rockchip]
+root         148       2  0 16:30 ?        00:00:00 [irq/126-rockchi]
+root         153       2  0 16:30 ?        00:00:00 [rk_pcie_hot_rst]
+root         154       2  0 16:30 ?        00:00:00 [rk_pcie_hot_rst]
+root         155       2  0 16:30 ?        00:00:00 [queue_work0]
+root         156       2  0 16:30 ?        00:00:00 [queue_work1]
+root         157       2  0 16:30 ?        00:00:00 [queue_work2]
+root         158       2  0 16:30 ?        00:00:00 [queue_work3]
+root         159       2  0 16:30 ?        00:00:00 [queue_work4]
+root         160       2  0 16:30 ?        00:00:00 [queue_work5]
+root         161       2  0 16:30 ?        00:00:00 [queue_work6]
+root         162       2  0 16:30 ?        00:00:00 [queue_work7]
+root         163       2  0 16:30 ?        00:00:00 [queue_work8]
+root         164       2  0 16:30 ?        00:00:00 [queue_work9]
+root         165       2  0 16:30 ?        00:00:00 [queue_work10]
+root         166       2  0 16:30 ?        00:00:00 [queue_work11]
+root         167       2  0 16:30 ?        00:00:00 [irq/34-fdb50400]
+root         168       2  0 16:30 ?        00:00:00 [irq/33-fdb50000]
+root         169       2  0 16:30 ?        00:00:00 [irq/41-fdba0000]
+root         170       2  0 16:30 ?        00:00:00 [irq/43-fdba4000]
+root         171       2  0 16:30 ?        00:00:00 [irq/45-fdba8000]
+root         172       2  0 16:30 ?        00:00:00 [irq/47-fdbac000]
+root         173       2  0 16:30 ?        00:00:00 [irq/49-fdbb0000]
+root         174       2  0 16:30 ?        00:00:00 [irq/39-fdb90000]
+root         175       2  0 16:30 ?        00:00:00 [irq/50-fdbd0000]
+root         176       2  0 16:30 ?        00:00:00 [irq/53-fdbe0000]
+root         177       2  0 16:30 ?        00:00:00 [irq/146-av1d-ma]
+root         179       2  0 16:30 ?        00:00:00 [hwrng]
+root         180       2  0 16:30 ?        00:00:00 [irq/82-fde50000]
+root         181       2  0 16:30 ?        00:00:00 [hpd_queue]
+root         182       2  0 16:30 ?        00:00:00 [irq/87-dw-hdmi-]
+root         183       2  0 16:30 ?        00:00:00 [irq/83-fde80000]
+root         184       2  0 16:30 ?        00:00:00 [irq/85-fde80000]
+root         185       2  0 16:30 ?        00:00:00 [hpd_queue]
+root         186       2  0 16:30 ?        00:00:00 [irq/133-dw-hdmi]
+root         187       2  0 16:30 ?        00:00:00 [irq/129-fdea000]
+root         188       2  0 16:30 ?        00:00:00 [irq/131-fdea000]
+root         189       2  0 16:30 ?        00:00:00 [card0-crtc0]
+root         190       2  0 16:30 ?        00:00:00 [card0-crtc1]
+root         191       2  0 16:30 ?        00:00:00 [card0-crtc2]
+root         192       2  0 16:30 ?        00:00:00 [card0-crtc3]
+root         194       2  0 16:30 ?        00:00:00 [hdcp_queue]
+root         195       2  0 16:30 ?        00:00:00 [hdcp_queue]
+root         196       2  0 16:30 ?        00:00:00 [cec-dw_hdmi_qp]
+root         197       2  0 16:30 ?        00:00:00 [irq/84-dw-hdmi-]
+root         198       2  0 16:30 ?        00:00:00 [cec-dw_hdmi_qp]
+root         199       2  0 16:30 ?        00:00:00 [irq/130-dw-hdmi]
+root         200       2  0 16:30 ?        00:00:00 [dmabuf-deferred]
+root         201       2  0 16:30 ?        00:00:00 [nvme-wq]
+root         202       2  0 16:30 ?        00:00:00 [nvme-reset-wq]
+root         203       2  0 16:30 ?        00:00:00 [nvme-delete-wq]
+root         204       2  0 16:30 ?        00:00:00 [spi2]
+root         205       2  0 16:30 ?        00:00:00 [irq/149-rk806]
+root         206       2  0 16:30 ?        00:00:00 [kworker/5:2-events]
+root         208       2  0 16:30 ?        00:00:00 [libertastf]
+root         210       2  0 16:30 ?        00:00:00 [kworker/4:3-events_freezable]
+root         212       2  0 16:30 ?        00:00:00 [uas]
+root         213       2  0 16:30 ?        00:00:00 [6-0022]
+root         214       2  0 16:30 ?        00:00:00 [6-0022]
+root         215       2  0 16:30 ?        00:00:00 [6-0022]
+root         216       2  0 16:30 ?        00:00:00 [irq/174-hym8563]
+root         222       2  0 16:30 ?        00:00:00 [kworker/u16:2-devfreq_wq]
+root         224       2  0 16:30 ?        00:00:00 [sdhci]
+root         225       2  0 16:30 ?        00:00:00 [irq/100-mmc1]
+root         226       2  0 16:30 ?        00:00:00 [cryptodev_queue]
+root         232       2  0 16:30 ?        00:00:00 [irq/176-headset]
+root         233       2  0 16:30 ?        00:00:00 [kstrp]
+root         236       2  0 16:30 ?        00:00:00 [irq/36-rga3_cor]
+root         237       2  0 16:30 ?        00:00:00 [irq/37-rga3_cor]
+root         238       2  0 16:30 ?        00:00:00 [irq/38-rga2]
+root         239       2  0 16:30 ?        00:00:00 [gpu_power_off_w]
+root         240       2  0 16:30 ?        00:00:00 [free_pages_work]
+root         242       2  0 16:30 ?        00:00:00 [rknpu_power_off]
+root         247       2  0 16:30 ?        00:00:00 [kworker/3:1H-kblockd]
+root         248       2  0 16:30 ?        00:00:00 [mmc_complete]
+root         249       2  0 16:30 ?        00:00:00 [kworker/7:1H-kblockd]
+root         307       2  0 16:30 ?        00:00:00 [kworker/6:1H-events_highpri]
+root         311       2  0 16:30 ?        00:00:00 [kworker/2:1H-kblockd]
+root         312       2  0 16:30 ?        00:00:00 [kworker/1:1H-kblockd]
+root         314       2  0 16:30 ?        00:00:00 [kworker/3:2H-events_highpri]
+root         316       2  0 16:30 ?        00:00:00 [kworker/5:2H-events_highpri]
+root         317       2  0 16:30 ?        00:00:00 [kworker/7:2H]
+root         355       2  0 16:31 ?        00:00:00 [jbd2/mmcblk0p2-]
+root         356       2  0 16:31 ?        00:00:00 [ext4-rsv-conver]
+root         369       2  0 16:31 ?        00:00:01 [kworker/3:3-events]
+root         372       2  0 16:31 ?        00:00:00 [ipv6_addrconf]
+root         426       2  0 16:31 ?        00:00:00 [kworker/7:3-events]
+root         438       1  0 16:31 ?        00:00:00 /lib/systemd/systemd-udevd
+root         459       2  0 16:31 ?        00:00:00 [kworker/4:2H]
+root         477       2  0 16:31 ?        00:00:00 [kworker/6:2H]
+root         741       2  0 16:31 ?        00:00:00 [ext4-rsv-conver]
+root         833       1  0 16:31 ?        00:00:00 /bin/sh -e /usr/bin/usbdevice start
+root         835     833  0 16:31 ?        00:00:00 /usr/bin/adbd
+root         889       1  0 16:31 ?        00:00:00 /lib/systemd/systemd-journald
+root         892       1  0 16:31 ?        00:00:00 /usr/sbin/haveged --Foreground --verbose=1 -w 1024
+systemd+     893       1  0 16:31 ?        00:00:00 /lib/systemd/systemd-resolved
+root         916       1  0 16:31 ?        00:00:00 /usr/lib/accountsservice/accounts-daemon
+root         925       1  0 16:31 ?        00:00:00 /usr/sbin/cron -f
+root         926       1  0 16:31 ?        00:00:00 /usr/sbin/cupsd -l
+message+     927       1  0 16:31 ?        00:00:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root         929       1  0 16:31 ?        00:00:01 /usr/sbin/NetworkManager --no-daemon
+syslog       939       1  0 16:31 ?        00:00:00 /usr/sbin/rsyslogd -n -iNONE
+root         942       1  0 16:31 ?        00:00:00 /usr/sbin/smartd -n
+root         944       1  0 16:31 ?        00:00:00 /lib/systemd/systemd-logind
+root         947       1  0 16:31 ?        00:00:00 /usr/lib/udisks2/udisksd
+root         948       1  0 16:31 ?        00:00:00 /sbin/wpa_supplicant -u -s -O /run/wpa_supplicant
+root        1391       1  0 16:31 ?        00:00:00 /usr/lib/policykit-1/polkitd --no-debug
+root        1505       1  0 16:31 ?        00:00:00 /usr/lib/ipsec/starter --daemon charon --nofork
+root        1507       1  0 16:31 ?        00:00:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root        1518       1  0 16:31 ?        00:00:01 /usr/bin/containerd
+root        1529       1  0 16:31 ?        00:00:00 /usr/sbin/lightdm
+_chrony     1532       1  0 16:31 ?        00:00:00 /usr/sbin/chronyd -F 0
+root        1563       1  0 16:31 ?        00:00:00 /usr/sbin/xrdp-sesman
+root        1565       1  0 16:31 ?        00:00:00 /usr/sbin/xl2tpd
+root        1579       1  0 16:31 ?        00:00:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+kernoops    1580       1  0 16:31 ?        00:00:00 /usr/sbin/kerneloops --test
+kernoops    1582       1  0 16:31 ?        00:00:00 /usr/sbin/kerneloops
+nx          1583       1  0 16:31 ?        00:00:11 /usr/NX/bin/nxserver.bin --daemon
+root        1584    1505  0 16:31 ?        00:00:00 /usr/lib/ipsec/charon
+xrdp        1586       1  0 16:31 ?        00:00:00 /usr/sbin/xrdp
+root        1604       2  0 16:31 ?        00:00:03 [RTW_CMD_THREAD]
+root        1617    1529  0 16:31 tty7     00:00:05 /usr/lib/xorg/Xorg -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+root        1943       1  0 16:31 tty1     00:00:00 /bin/login -f
+root        1944       1  0 16:31 ttyFIQ0  00:00:00 /bin/login -f
+nx          2069    1583  0 16:31 ?        00:00:00 /usr/NX/bin/nxd
+orangepi    2377       1  0 16:31 ?        00:00:00 /lib/systemd/systemd --user
+orangepi    2378    2377  0 16:31 ?        00:00:00 (sd-pam)
+orangepi    2410    2377  0 16:31 ?        00:00:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+orangepi    2412    1943  0 16:31 tty1     00:00:00 -bash
+orangepi    2413    1944  0 16:31 ttyFIQ0  00:00:00 -bash
+root        2425    1529  0 16:31 ?        00:00:00 lightdm --session-child 12 15
+orangepi    2448    2425  0 16:31 ?        00:00:00 xfce4-session
+orangepi    2491    2377  0 16:31 ?        00:00:00 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+orangepi    2717    2448  0 16:31 ?        00:00:00 /usr/bin/ssh-agent /usr/bin/im-launch startxfce4
+orangepi    2734       1  0 16:31 ?        00:00:00 /usr/bin/fcitx -d
+orangepi    2743       1  0 16:31 ?        00:00:00 /usr/bin/dbus-daemon --syslog --fork --print-pid 5 --print-address 7 --config-file /usr/share/fcitx/dbus/daemon.conf
+orangepi    2747       1  0 16:31 ?        00:00:00 /usr/bin/fcitx-dbus-watcher unix:abstract=/tmp/dbus-WVQx0Kb5Pw,guid=66a84bd5d35140c7290a7e9769c24bf4 2743
+orangepi    2748    2377  0 16:31 ?        00:00:00 /usr/lib/aarch64-linux-gnu/xfce4/notifyd/xfce4-notifyd
+orangepi    2752    2377  0 16:31 ?        00:00:00 /usr/lib/aarch64-linux-gnu/xfce4/xfconf/xfconfd
+orangepi    2759    2377  0 16:31 ?        00:00:00 /usr/libexec/at-spi-bus-launcher
+orangepi    2762    2377  0 16:31 ?        00:00:00 /usr/libexec/gvfsd
+orangepi    2770    2759  0 16:31 ?        00:00:00 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+orangepi    2775    2377  0 16:31 ?        00:00:00 /usr/libexec/at-spi2-registryd --use-gnome-session
+orangepi    2782    2377  0 16:31 ?        00:00:00 /usr/bin/gpg-agent --supervised
+orangepi    2784    2448  0 16:31 ?        00:00:00 xfwm4
+orangepi    2793       1  0 16:31 ?        00:00:00 xfsettingsd
+orangepi    2794    2448  0 16:31 ?        00:00:00 xfce4-panel
+root        2797       1  0 16:31 ?        00:00:00 /usr/lib/upower/upowerd
+orangepi    2828    2448  0 16:31 ?        00:00:00 Thunar --daemon
+orangepi    2833    2448  0 16:31 ?        00:00:00 xfdesktop
+orangepi    2836    2794  0 16:31 ?        00:00:00 /usr/lib/aarch64-linux-gnu/xfce4/panel/wrapper-2.0 /usr/lib/aarch64-linux-gnu/xfce4/panel/plugins/libsystray.so 6 16777224 systray 通知区域 通知?标出现的区域
+orangepi    2837    2794  0 16:31 ?        00:00:00 /usr/lib/aarch64-linux-gnu/xfce4/panel/wrapper-2.0 /usr/lib/aarch64-linux-gnu/xfce4/panel/plugins/libactions.so 2 16777225 actions 动作按钮 注销、锁屏或其它系统动作
+orangepi    2838    2448  0 16:31 ?        00:00:00 bash -c sleep 5; xfce4-terminal --title='GPIO Trigger Monitor' --hold -e 'bash -c "python3 /home/orangepi/slam_ws/gpio_trigger.py; exec bash"'
+orangepi    2842    2448  0 16:31 ?        00:00:00 pasystray
+orangepi    2845    2448  0 16:31 ?        00:00:00 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+orangepi    2848    2377  0 16:31 ?        00:00:00 /usr/libexec/gvfs-udisks2-volume-monitor
+orangepi    2851    2448  0 16:31 ?        00:00:00 /usr/bin/python3 /usr/bin/blueman-applet
+orangepi    2856    2448  0 16:31 ?        00:00:01 nm-applet
+orangepi    2861    2377  0 16:31 ?        00:00:00 /usr/libexec/gvfs-mtp-volume-monitor
+orangepi    2871    2448  0 16:31 ?        00:00:00 update-notifier
+orangepi    2872    2377  0 16:31 ?        00:00:00 /usr/libexec/gvfs-goa-volume-monitor
+orangepi    2878    2448  0 16:31 ?        00:00:00 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+orangepi    2892    2448  0 16:31 ?        00:00:00 xscreensaver -no-splash
+orangepi    2894    2377  0 16:31 ?        00:00:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+orangepi    2895       1  0 16:31 ?        00:00:00 xfce4-power-manager
+orangepi    2903    2448  0 16:31 ?        00:00:01 /usr/bin/python3 /usr/bin/caffeine
+orangepi    2914    2377  0 16:31 ?        00:00:00 /usr/libexec/gvfs-afc-volume-monitor
+orangepi    2932       1  0 16:31 ?        00:00:00 /usr/bin/python3 /usr/bin/blueman-tray
+orangepi    2935       1  0 16:31 ?        00:00:00 /usr/bin/python3 /usr/bin/blueman-tray
+orangepi    2936    2377  0 16:31 ?        00:00:00 /usr/lib/bluetooth/obexd
+orangepi    2948    2838  0 16:31 ?        00:00:00 xfce4-terminal --title=GPIO Trigger Monitor --hold -e bash -c "python3 /home/orangepi/slam_ws/gpio_trigger.py; exec bash"
+orangepi    2956       1  0 16:32 ?        00:00:00 fcitx-qimpanel
+orangepi    2994    2948  0 16:32 pts/0    00:00:00 bash -c python3 /home/orangepi/slam_ws/gpio_trigger.py; exec bash
+orangepi    2997    2994  0 16:32 pts/0    00:00:03 python3 /home/orangepi/slam_ws/gpio_trigger.py
+root        3168    1583  0 16:32 ?        00:00:00 /usr/NX/bin/nxexec --node /usr/NX/bin/nxexec --nopam --user orangepi --priority realtime --mode 0 --pid 47
+orangepi    3170    3168  0 16:32 ?        00:00:01 /usr/NX/bin/nxnode.bin
+orangepi    3212    3170  0 16:32 ?        00:00:01 /usr/NX/bin/nxrunner.bin --monitor --pid 2448
+root        3415    3170  0 16:32 ?        00:00:11 /usr/NX/bin/nxrunner.bin --update ask --background --root /var/NX/nx/.nx
+root        3762       2  0 16:39 ?        00:00:00 [kworker/4:0-events]
+root        3766       2  0 16:41 ?        00:00:02 [kworker/0:0-events]
+root        3768       2  0 16:41 ?        00:00:00 [kworker/3:0-events]
+root        3774       2  0 16:42 ?        00:00:00 [kworker/1:1-events]
+root        3775       2  0 16:42 ?        00:00:00 [kworker/0:1H-events_highpri]
+root        3778       2  0 16:42 ?        00:00:00 [kworker/1:2H]
+root        3781       2  0 16:44 ?        00:00:00 [kworker/6:0-events]
+root        3799       2  0 16:46 ?        00:00:00 [kworker/2:0-pm]
+root        3800       2  0 16:46 ?        00:00:00 [kworker/0:2-events]
+root        3807       2  0 16:46 ?        00:00:00 [kworker/5:0-events]
+root        3836       2  0 16:47 ?        00:00:00 [kworker/7:2-events]
+root        3885       2  0 16:47 ?        00:00:01 [kworker/4:2-events]
+root        4185       2  0 16:47 ?        00:00:00 [kworker/1:0-events]
+root        4231       2  0 16:47 ?        00:00:00 [kworker/0:0H-mmc_complete]
+root        4232       2  0 16:48 ?        00:00:00 [kworker/2:2H]
+root        4234       2  0 16:48 ?        00:00:00 [kworker/u17:2-mali_kbase_csf_sync_upd]
+root        4243       2  0 16:51 ?        00:00:00 [kworker/1:0H]
+root        4244       2  0 16:52 ?        00:00:00 [kworker/7:0-events_freezable]
+root        4246       2  0 16:52 ?        00:00:00 [kworker/0:1-events]
+root        4248       2  0 16:53 ?        00:00:00 [kworker/0:2H-mmc_complete]
+root        4250       2  0 16:53 ?        00:00:00 [kworker/3:1-events]
+root        4253    1579  0 16:54 ?        00:00:00 sshd: orangepi [priv]
+root        4274       2  0 16:54 ?        00:00:00 [kworker/1:2-events]
+root        4292       2  0 16:54 ?        00:00:00 [kworker/6:1-events]
+root        4300       2  0 16:54 ?        00:00:00 [kworker/5:1-events]
+orangepi    4393    4253  0 16:54 ?        00:00:00 sshd: orangepi@notty
+root        4394       2  0 16:54 ?        00:00:00 [kworker/2:2-events]
+orangepi    4395    4393  0 16:54 ?        00:00:00 sh
+orangepi    4413    4395  1 16:54 ?        00:00:01 /home/orangepi/.vscode-server/code-07ff9d6178ede9a1bd12ad3399074d726ebe6e43 command-shell --cli-data-dir /home/orangepi/.vscode-server/cli --parent-process-id 4395 --on-host=127.0.0.1 --on-port
+orangepi    4507    4395  0 16:54 ?        00:00:00 sleep 180
+root        4508       2  0 16:54 ?        00:00:00 [kworker/6:3]
+orangepi    4509    4413  0 16:54 ?        00:00:00 sh /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/bin/code-server --connection-token=remotessh --accept-server-license-terms --start-server --enable-remote-auto-shutdown --socket-path=/tmp/code-317e7bc0-b4f3-4bc9-b30c-96e09062d64b
+orangepi    4513    4509  8 16:54 ?        00:00:07 /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/node /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/out/server-main.js --connection-token=remotessh --accept-server-license-terms --start-server --enable-remote-auto-shutdown --socket-path=/tmp/code-317e7bc0-b4f3-4bc9-b30c-96e09062d64b
+root        4524       2  0 16:54 ?        00:00:00 [kworker/4:0H]
+root        4525       2  0 16:54 ?        00:00:00 [kworker/2:0H]
+root        4526       2  0 16:54 ?        00:00:00 [kworker/5:0H]
+root        4527       2  0 16:54 ?        00:00:00 [kworker/6:0H]
+orangepi    4539    4513  7 16:54 ?        00:00:06 /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/node /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/out/bootstrap-fork --type=fileWatcher
+root        4565       2  0 16:54 ?        00:00:00 [kworker/3:0H]
+root        4566       2  0 16:54 ?        00:00:00 [kworker/4:1-events]
+root        4578       2  0 16:54 ?        00:00:00 [kworker/u16:3]
+orangepi    4579    4513 29 16:54 ?        00:00:24 /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/node --dns-result-order=ipv4first /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/out/bootstrap-fork --type=extensionHost --transformURIs --useHostProxy=false
+orangepi    4586    4513  2 16:54 ?        00:00:02 /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/node /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/out/bootstrap-fork --type=ptyHost --logsPath /home/orangepi/.vscode-server/data/logs/20260324T165437
+root        4601       2  0 16:54 ?        00:00:00 [kworker/5:3]
+root        4636       2  0 16:54 ?        00:00:00 [kworker/2:3]
+orangepi    4637    4586  0 16:54 pts/5    00:00:00 /bin/bash --init-file /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+orangepi    4653    4413  0 16:54 ?        00:00:00 /bin/sh
+root        4706       2  0 16:54 ?        00:00:00 [kworker/7:0H]
+root        4770       2  0 16:54 ?        00:00:00 [kworker/7:1-events]
+orangepi    4785    4579  0 16:54 ?        00:00:00 /home/orangepi/.vscode-server/extensions/ms-python.python-2026.4.0-linux-arm64/python-env-tools/bin/pet server
+orangepi    4848    4579 77 16:54 ?        00:00:58 /home/orangepi/.vscode-server/extensions/ms-vscode.cpptools-1.30.5-linux-arm64/bin/cpptools
+orangepi    4861    4586  0 16:54 pts/1    00:00:00 /bin/bash --init-file /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+root        4942       2  0 16:54 ?        00:00:00 [kworker/1:3]
+orangepi    4943    4579  0 16:54 ?        00:00:00 /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/node /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/extensions/json-language-features/server/dist/node/jsonServerMain --node-ipc --clientProcessId=4579
+orangepi    5041    4579  1 16:54 ?        00:00:00 /home/orangepi/.vscode-server/extensions/ms-python.vscode-python-envs-1.22.0-linux-arm64/python-env-tools/bin/pet server
+orangepi    5111    4579 13 16:54 ?        00:00:09 /home/orangepi/.vscode-server/cli/servers/Stable-07ff9d6178ede9a1bd12ad3399074d726ebe6e43/server/node /home/orangepi/.vscode-server/extensions/ms-python.vscode-pylance-2026.1.1/dist/server.bundle.js --cancellationReceive=file:fbfd36e0a072061989b03d43a6d7953ec1bdaae0e6 --node-ipc --clientProcessId=4579
+root        5406       2  0 16:55 ?        00:00:00 [kworker/0:3-events]
+root        5464       2  0 16:55 ?        00:00:00 [kworker/4:4]
+root        5475       2  0 16:55 ?        00:00:00 [kworker/7:4-pm]
+root        5481       2  0 16:55 ?        00:00:00 [kworker/3:2]
+orangepi    5573    4637  0 16:56 pts/5    00:00:00 ps -ef

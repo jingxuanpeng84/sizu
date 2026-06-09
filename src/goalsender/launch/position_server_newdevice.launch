@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- 位置服务端 (LADDAR_OBJ) 基于 newdevice 框架 -->
+    <!-- 接收来自HTTPSERVER_OBJ的位置请求，发送机器人坐标数据 -->
+    
+    <!-- 网络配置 - 分布式部署 -->
+    <!-- Position服务器运行在SLAM端: 192.168.110.205 -->
+    <!-- HTTP服务器运行在: 192.168.110.180 -->
+    
+    <!-- 位置服务器监听地址和端口（SLAM端监听所有接口） -->
+    <arg name="position_ip" default="0.0.0.0" />
+    <arg name="position_port" default="8080" />
+    
+    <!-- HTTP服务器地址（用于心跳，注意这里是UDP端口8111，不是HTTP端口8080） -->
+    <arg name="httpserver_ip" default="192.168.110.180" />
+    <arg name="httpserver_port" default="8111" />
+    
+    <!-- ROS话题配置 -->
+    <arg name="odom_topic" default="/Odometry" />
+    
+    <!-- TF坐标系配置（与map_switch保持一致） -->
+    <arg name="use_tf" default="true" />
+    <arg name="source_frame" default="/robot_body" />
+    <arg name="target_frame" default="/map" />
+
+    <!-- 地图配置 -->
+    <arg name="map_yaml_file" default="/home/orangepi/slam_ws/src/FAST_LIO_GLOBAL/PCD/scans_507_in.yaml" />
+    
+    <!-- 启动位置服务端节点 -->
+    <node name="position_server_node" 
+          pkg="goal_sender" 
+          type="position_server_node" 
+          output="screen">
+        
+        <param name="position_ip" value="$(arg position_ip)" />
+        <param name="position_port" value="$(arg position_port)" />
+        <param name="httpserver_ip" value="$(arg httpserver_ip)" />
+        <param name="httpserver_port" value="$(arg httpserver_port)" />
+        <param name="odom_topic" value="$(arg odom_topic)" />
+        <param name="use_tf" value="$(arg use_tf)" />
+        <param name="source_frame" value="$(arg source_frame)" />
+        <param name="target_frame" value="$(arg target_frame)" />
+        <param name="map_yaml_file" value="$(arg map_yaml_file)" />
+    </node>
+    
+</launch>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+    <path Seq="1" Type="ulong">
+        <x Type="double">-1.0420176433596247</x>
+        <y Type="double">0.058773700276056662</y>
+        <yaw Type="double">0.0087442412352341931</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="2" Type="ulong">
+        <x Type="double">-0.06664024184192277</x>
+        <y Type="double">0.25245517214097435</y>
+        <yaw Type="double">1.5773103099902366</yaw>
+        <keypointflag Type="uint">2</keypointflag>
+    </path>
+    <path Seq="3" Type="ulong">
+        <x Type="double">0.17377734189236477</x>
+        <y Type="double">0.097552168755100643</y>
+        <yaw Type="double">-0.0082745398894516504</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="4" Type="ulong">
+        <x Type="double">33.751067187902912</x>
+        <y Type="double">-1.4159566277346383</y>
+        <yaw Type="double">-0.013844767201157869</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="5" Type="ulong">
+        <x Type="double">36.743514692425769</x>
+        <y Type="double">15.562310744463044</y>
+        <yaw Type="double">1.3246184135842634</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="6" Type="ulong">
+        <x Type="double">20.072698972965807</x>
+        <y Type="double">18.882014330499267</y>
+        <yaw Type="double">2.9909427265205148</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="7" Type="ulong">
+        <x Type="double">21.496309603414382</x>
+        <y Type="double">24.197596152659138</y>
+        <yaw Type="double">1.3172157090586387</yaw>
+        <keypointflag Type="uint">1</keypointflag>
+    </path>
+    <path Seq="8" Type="ulong">
+        <x Type="double">22.617054029117615</x>
+        <y Type="double">23.970618051282052</y>
+        <yaw Type="double">-0.083811853323653776</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="9" Type="ulong">
+        <x Type="double">20.747659765057321</x>
+        <y Type="double">18.78002385956221</y>
+        <yaw Type="double">-1.9113184053928631</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="10" Type="ulong">
+        <x Type="double">36.915987050618313</x>
+        <y Type="double">15.489418600035094</y>
+        <yaw Type="double">-0.19390956395874215</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="11" Type="ulong">
+        <x Type="double">33.591225566916606</x>
+        <y Type="double">-1.8139464390724049</y>
+        <yaw Type="double">-1.7098750657136084</yaw>
+        <keypointflag Type="uint">1</keypointflag>
+    </path>
+    <path Seq="12" Type="ulong">
+        <x Type="double">3.7919484251408671</x>
+        <y Type="double">-0.065236682589668277</y>
+        <yaw Type="double">-3.1390914398530509</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="13" Type="ulong">
+        <x Type="double">-1.5191701338903187</x>
+        <y Type="double">-0.85688678522427519</y>
+        <yaw Type="double">-2.9678772249394352</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+</Root>

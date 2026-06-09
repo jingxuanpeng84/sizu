@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- RTSP 推流配置 -->
+  <arg name="rtsp_url" default="rtsp://127.0.0.1:8554/mapping" />
+  <arg name="fps" default="15" />
+  <arg name="out_width" default="800" />
+  <arg name="out_height" default="600" />
+  <arg name="map_topic" default="/projected_map" />
+  
+  <!-- 启动地图 RTSP 推流节点 -->
+  <node name="map_rtsp_publisher" pkg="rtsp_stream" type="map_rtsp_publisher" output="screen">
+    <param name="rtsp_url" value="$(arg rtsp_url)" />
+    <param name="fps" value="$(arg fps)" />
+    <param name="out_width" value="$(arg out_width)" />
+    <param name="out_height" value="$(arg out_height)" />
+    <param name="map_topic" value="$(arg map_topic)" />
+  </node>
+  
+</launch>

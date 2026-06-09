@@ -1,0 +1,66 @@
+# robot
+robotNetInterface: enP4p65s0
+robotActionDurationTime: 100000     # ms
+reversalPathXmlPath: /home/orangepi/Desktop/work_station/OctiRobotVersion2/path_control/test1.xml
+
+# currentGoalIndex
+currentGoalIndexRecordLoad: 0
+currentGoalIndexXmlPath: "1231test"
+
+# laddar
+laddarIp: "192.168.2.100"
+laddarPort: 6001
+map_switch_PORT: 6050
+
+# my
+myIp: "192.168.2.101"
+myPort: 6002
+
+# motionInterface
+motionInterfaceLoad: 1
+motionInterfaceIp: "127.0.0.1"
+motionInterfacePort: 8081
+
+# vision
+visionLoad: 1
+visionIp: "127.0.0.1" #"192.168.124.123"
+visionPort: 8889 #6000
+robotVisionIp: "127.0.0.1"
+robotVisionPort: 6007
+
+# video
+videoDeviceLoad: 1
+videoDeviceAddr: "udpsrc address=230.1.1.1 port=1720 multicast-iface=enP4p65s0 ! application/x-rtp, media=video, encoding-name=H264 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw,width=1280,height=720,format=BGR ! appsink drop=1"
+
+# interactor
+speakerLoad: 0     # 1: load speaker, 0: not load speaker
+speakerIp: nan
+speakerPort: 6003
+
+# UiShow
+uiShowLoad: 1
+
+# autoCharge / must depend on video
+autoChargeLoad: 1
+lowCharge: 80
+highCharge: 81
+
+# localPlanner
+localPlanner: DWA
+
+# DWA parameters, if use DWA , these parameters must be needed
+sampleDetaTime: 0.1   # 采样时间
+vMin: -0.            # (只能为0)线速度角速度边界 （角速度可以偏大，这样所生成的路径的角度范围更大，路进选择更多，不易造成碰撞）
+vMax: 0.35
+wMin: -1
+wMax: 1
+aVMax: 1.0            # 线加速度和角加速度最大值
+aWMax: 2.
+vSampleDetaV: 0.05     # 采样分辨率
+wSampleDetaW: 3      # 0～360
+predictTime: 3.       # 轨迹推算时间长度
+alpha: 0.4               # 方向角轨迹评价函数系数
+beta: 1             # 障碍物距离轨迹评价函数系数
+gamma: 0.2          # 速度轨迹评价函数系数
+keyPointRadius: 0.3   # 用于判断是否到达目标点
+robot_radius: 0.3   # 机器人半径

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+    <path Seq="1" Type="ulong">
+        <x Type="double">-0.94216234144785305</x>
+        <y Type="double">0.13749600482584928</y>
+        <yaw Type="double">-0.017465312812244446</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="2" Type="ulong">
+        <x Type="double">0.093872394427519018</x>
+        <y Type="double">0.33634216519724658</y>
+        <yaw Type="double">1.5279090840384333</yaw>
+        <keypointflag Type="uint">2</keypointflag>
+    </path>
+    <path Seq="3" Type="ulong">
+        <x Type="double">0.31755623961810625</x>
+        <y Type="double">0.15644362733533579</y>
+        <yaw Type="double">-0.10125888813388527</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="4" Type="ulong">
+        <x Type="double">5.102688572467228</x>
+        <y Type="double">0.22936126596243714</y>
+        <yaw Type="double">0.12950690101406756</yaw>
+        <keypointflag Type="uint">1</keypointflag>
+    </path>
+    <path Seq="5" Type="ulong">
+        <x Type="double">4.722470237867725</x>
+        <y Type="double">-1.8882807409062654</y>
+        <yaw Type="double">-1.5055284622401612</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="6" Type="ulong">
+        <x Type="double">3.7405829384910882</x>
+        <y Type="double">-1.6766927732113772</y>
+        <yaw Type="double">-3.1287351428349397</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="7" Type="ulong">
+        <x Type="double">3.8025190093863483</x>
+        <y Type="double">-0.19877187483237618</y>
+        <yaw Type="double">1.6303479675406864</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+    <path Seq="8" Type="ulong">
+        <x Type="double">-1.2643282644341762</x>
+        <y Type="double">-0.61756258954708465</y>
+        <yaw Type="double">3.0923194034184038</yaw>
+        <keypointflag Type="uint">0</keypointflag>
+    </path>
+</Root>

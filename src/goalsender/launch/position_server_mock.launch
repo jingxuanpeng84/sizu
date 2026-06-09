@@ -1,0 +1,20 @@
+<launch>
+    <!-- Position Server Mock - 模拟位置数据测试版本 -->
+    
+    <!-- 位置服务端配置 -->
+    <arg name="position_ip" default="192.168.31.126" />
+    <arg name="position_port" default="8080" />
+    
+    <!-- HTTP服务器配置 -->
+    <arg name="httpserver_ip" default="192.168.31.70" />
+    <arg name="httpserver_port" default="8111" />
+    
+    <!-- 启动模拟位置服务端节点 -->
+    <node pkg="goal_sender" type="position_server_mock" name="position_server_mock" output="screen">
+        <param name="position_ip" value="$(arg position_ip)" />
+        <param name="position_port" value="$(arg position_port)" />
+        <param name="httpserver_ip" value="$(arg httpserver_ip)" />
+        <param name="httpserver_port" value="$(arg httpserver_port)" />
+    </node>
+    
+</launch>
